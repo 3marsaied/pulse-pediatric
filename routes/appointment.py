@@ -198,8 +198,8 @@ async def get_appointment(db: session = Depends(DataBase.get_db)):
         patient = db.query(models.Patient).filter(models.Patient.id == appointment.patientId).first()
         doctor = db.query(models.Doctor).filter(models.Doctor.id == appointment.doctorId).first()
         appointment_date = appointment.appointmentDate
-        day = appointment_date.day
-        month = appointment_date.month
+        day = appointment_date.month
+        month = appointment_date.day
         year = appointment_date.year
         
         # Format the date string as "dd/mm/yyyy"
