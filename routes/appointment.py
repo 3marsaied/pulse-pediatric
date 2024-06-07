@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status, Depends, APIRouter, Header
 from sqlalchemy.orm import session
+from datetime import datetime
 from typing import List
 import pprint
 
@@ -117,6 +118,7 @@ async def get_appointment(parentId: int, Authorization: str = Header(None), db: 
         user = db.query(models.User).filter(models.User.userId == apointment.parentId).first()
         patient = db.query(models.Patient).filter(models.Patient.id == apointment.patientId).first()
         doctor = db.query(models.Doctor).filter(models.Doctor.id == apointment.doctorId).first()
+        formatted_date = apointment.appointmentDate.strftime("%d/%m/%Y")
         Data.append({
             "id": apointment.id,
             "parentId": user.userId,
@@ -129,7 +131,7 @@ async def get_appointment(parentId: int, Authorization: str = Header(None), db: 
             "doctorPic": doctor.profilePicture,
             "doctorFirstName": doctor.firstName,
             "doctorLastName": doctor.lastName,
-            "appointmentDate": apointment.appointmentDate,
+            "appointmentDate": formatted_date,
             "From": apointment.From,
             "To": apointment.To,
             "isTaken": apointment.isTaken,
@@ -153,6 +155,7 @@ async def get_appointment(doctorId: int, userId: int, Authorization: str = Heade
     for apointment in appointments:
         user = db.query(models.User).filter(models.User.userId == apointment.parentId).first()
         patient = db.query(models.Patient).filter(models.Patient.id == apointment.patientId).first()
+        formatted_date = apointment.appointmentDate.strftime("%d/%m/%Y")
         Data.append({
             "appointmentId": apointment.id,
             "parentId": user.userId,
@@ -161,7 +164,7 @@ async def get_appointment(doctorId: int, userId: int, Authorization: str = Heade
             "parentFirstName": user.firstName,
             "parentLastName": user.lastName,
             "parentPic": user.profilePicture,
-            "appointmentDate": apointment.appointmentDate,
+            "appointmentDate": formatted_date,
             "From": apointment.From,
             "To": apointment.To,
             "isTaken": apointment.isTaken,
@@ -181,6 +184,7 @@ async def get_appointment(db: session = Depends(DataBase.get_db)):
         user = db.query(models.User).filter(models.User.userId == appointment.parentId).first()
         patient = db.query(models.Patient).filter(models.Patient.id == appointment.patientId).first()
         doctor = db.query(models.Doctor).filter(models.Doctor.id == appointment.doctorId).first()
+        formatted_date = appointment.appointmentDate.strftime("%d/%m/%Y")
         
         appointment_data = {
             "appointmentId": appointment.id,
@@ -193,7 +197,7 @@ async def get_appointment(db: session = Depends(DataBase.get_db)):
             "doctorFirstName": doctor.firstName,
             "doctorLastName": doctor.lastName,
             "parentPic": user.profilePicture,
-            "appointmentDate": appointment.appointmentDate,
+            "appointmentDate": formatted_date,
             "From": appointment.From,
             "To": appointment.To,
             "isTaken": appointment.isTaken,
@@ -222,7 +226,7 @@ async def get_appointment(adminId:int, Authorization: str = Header(None), db: se
         user = db.query(models.User).filter(models.User.userId == appointment.parentId).first()
         patient = db.query(models.Patient).filter(models.Patient.id == appointment.patientId).first()
         doctor = db.query(models.Doctor).filter(models.Doctor.id == appointment.doctorId).first()
-        
+        formatted_date = appointment.appointmentDate.strftime("%d/%m/%Y")
         appointment_data = {
             "id": appointment.id,
             "patientFirstName": patient.firstName,
@@ -231,7 +235,7 @@ async def get_appointment(adminId:int, Authorization: str = Header(None), db: se
             "doctorFirstName": doctor.firstName,
             "doctorLastName": doctor.lastName,
             "doctorId": doctor.id,
-            "appointmentDate": appointment.appointmentDate,
+            "appointmentDate": formatted_date,
             "From": appointment.From,
             "To": appointment.To,
             "Paied": appointment.Paied
@@ -261,7 +265,7 @@ async def get_appointment(adminId: int, Authorization: str = Header(None), db: s
         user = db.query(models.User).filter(models.User.userId == appointment.parentId).first()
         patient = db.query(models.Patient).filter(models.Patient.id == appointment.patientId).first()
         doctor = db.query(models.Doctor).filter(models.Doctor.id == appointment.doctorId).first()
-        
+        formatted_date = appointment.appointmentDate.strftime("%d/%m/%Y")
         appointment_data = {
             "appointmentId": appointment.id,
             "parentId": user.userId,
@@ -273,7 +277,7 @@ async def get_appointment(adminId: int, Authorization: str = Header(None), db: s
             "doctorFirstName": doctor.firstName,
             "doctorLastName": doctor.lastName,
             "parentPic": user.profilePicture,
-            "appointmentDate": appointment.appointmentDate,
+            "appointmentDate": formatted_date,
             "From": appointment.From,
             "To": appointment.To,
             "isTaken": appointment.isTaken,
@@ -299,7 +303,7 @@ async def get_appointment(appointmentId:int, adminId:int, Authorization: str = H
     user = db.query(models.User).filter(models.User.userId == appointment.parentId).first()
     patient = db.query(models.Patient).filter(models.Patient.id == appointment.patientId).first()
     doctor = db.query(models.Doctor).filter(models.Doctor.id == appointment.doctorId).first()
-        
+    formatted_date = appointment.appointmentDate.strftime("%d/%m/%Y")    
     appointment_data = {
         "id": appointment.id,
         "patientFirstName": patient.firstName,
@@ -308,7 +312,7 @@ async def get_appointment(appointmentId:int, adminId:int, Authorization: str = H
         "doctorFirstName": doctor.firstName,
         "doctorLastName": doctor.lastName,
         "doctorId": doctor.id,
-        "appointmentDate": appointment.appointmentDate,
+        "appointmentDate": formatted_date,
         "From": appointment.From,
         "To": appointment.To,
         "Paied": appointment.Paied
@@ -335,7 +339,7 @@ async def get_all_appointments(staffId: int, Authorization: str = Header(None), 
         user = db.query(models.User).filter(models.User.userId == appointment.parentId).first()
         patient = db.query(models.Patient).filter(models.Patient.id == appointment.patientId).first()
         doctor = db.query(models.Doctor).filter(models.Doctor.id == appointment.doctorId).first()
-        
+        formatted_date = appointment.appointmentDate.strftime("%d/%m/%Y")
         appointment_data = {
             "appointmentId": appointment.id,
             "parentId": user.userId,
@@ -347,7 +351,7 @@ async def get_all_appointments(staffId: int, Authorization: str = Header(None), 
             "doctorFirstName": doctor.firstName,
             "doctorLastName": doctor.lastName,
             "parentPic": user.profilePicture,
-            "appointmentDate": appointment.appointmentDate,
+            "appointmentDate": formatted_date,
             "From": appointment.From,
             "To": appointment.To,
             "isTaken": appointment.isTaken,
