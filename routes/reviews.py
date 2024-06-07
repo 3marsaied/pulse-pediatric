@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, Depends, APIRouter
+from fastapi import HTTPException, status, Depends, APIRouter, Header
 from sqlalchemy.orm import session
 from typing import List
 
@@ -17,7 +17,12 @@ router = APIRouter(
 )
 
 @router.post("/add/review", status_code=status.HTTP_201_CREATED, description="This is a post request add a new review")
-async def add_review(review: schemas.reviews, token:str, db: session = Depends(DataBase.get_db)):
+async def add_review(review: schemas.reviews, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(review.parentId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -49,7 +54,12 @@ async def get_review(doctorId: int, db: session = Depends(DataBase.get_db)):
     return reviews_response
 
 @router.get("/get/reviews/barchart/{doctorId}", status_code=status.HTTP_200_OK, description="This is a get request to get all reviews of a patient", response_model=List[schemas.barChart])
-async def get_reviews_barchart(doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def get_reviews_barchart(doctorId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(doctorId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -69,7 +79,12 @@ async def get_reviews_barchart(doctorId: int, token: str, db: session = Depends(
 
 
 @router.get("/get/reviews/barchart/{doctorId}/{adminId}", status_code=status.HTTP_200_OK, description="This is a get request to get all reviews of a patient", response_model=List[schemas.barChart])
-async def get_reviews_barchart(doctorId: int, adminId:int, token: str, db: session = Depends(DataBase.get_db)):
+async def get_reviews_barchart(doctorId: int, adminId:int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -90,7 +105,12 @@ async def get_reviews_barchart(doctorId: int, adminId:int, token: str, db: sessi
 
 
 @router.get('/get/doctor/avg/rating/{doctorId}', status_code=status.HTTP_200_OK, description="This route returns the average rating of a doctor", response_model = schemas.avgRating)
-async def getAvgRating(doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def getAvgRating(doctorId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(doctorId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -107,7 +127,12 @@ async def getAvgRating(doctorId: int, token: str, db: session = Depends(DataBase
 
 
 @router.get('/get/doctor/avg/rating/{doctorId}/{adminId}', status_code=status.HTTP_200_OK, description="This route returns the average rating of a doctor", response_model = schemas.avgRating)
-async def getAvgRating(doctorId: int,adminId:int, token: str, db: session = Depends(DataBase.get_db)):
+async def getAvgRating(doctorId: int,adminId:int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
