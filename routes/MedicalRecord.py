@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, Depends, APIRouter
+from fastapi import HTTPException, status, Depends, APIRouter, Header
 from sqlalchemy.orm import session
 
 import sys
@@ -18,7 +18,12 @@ router = APIRouter(
 
 
 @router.get('/get/medicalRecord/{parentId}/{patientId}', description='this get request returns all the medical records for a certain patient', response_model=list[schemas.medicalRecordResponse])
-async def getMedicalRecord(patientId: int, parentId: int,token: str, db: session = Depends(DataBase.get_db)):
+async def getMedicalRecord(patientId: int, parentId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -34,7 +39,12 @@ async def getMedicalRecord(patientId: int, parentId: int,token: str, db: session
 
 
 @router.get('/getMedicalRecord/{doctorId}/{patientId}', description='this get request returns all the medical records for a certain patient', response_model=list[schemas.medicalRecordResponse])
-async def getMedicalRecord(doctorId: int, patientId: int,token: str, db: session = Depends(DataBase.get_db)):
+async def getMedicalRecord(doctorId: int, patientId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(doctorId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -52,7 +62,12 @@ async def getMedicalRecord(doctorId: int, patientId: int,token: str, db: session
 
 
 @router.put('/update/medicalRecord/{patientId}/{docotrId}', description='this update request updates the medical record for a certain patient')
-async def updateMedicalRecord(record : schemas.updateMedicalRecord, patientId: int, docotrId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def updateMedicalRecord(record : schemas.updateMedicalRecord, patientId: int, docotrId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(docotrId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -75,7 +90,12 @@ async def updateMedicalRecord(record : schemas.updateMedicalRecord, patientId: i
 
 
 @router.put('/update/medicalRecord/radiologyReport/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
-async def update_medicalRecord(radiologyReport: schemas.radiologyReportUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_medicalRecord(radiologyReport: schemas.radiologyReportUpdate, userId: int, medicalRecordId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -89,7 +109,12 @@ async def update_medicalRecord(radiologyReport: schemas.radiologyReportUpdate, u
 
 
 @router.put('/update/medicalRecord/medications/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
-async def update_medicalRecord(medications: schemas.medicationsUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_medicalRecord(medications: schemas.medicationsUpdate, userId: int, medicalRecordId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -104,7 +129,12 @@ async def update_medicalRecord(medications: schemas.medicationsUpdate, userId: i
 
 
 @router.put('/update/medicalRecord/surgicalHistory/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
-async def update_medicalRecord(surgicalHistory: schemas.surgicalHistoryUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_medicalRecord(surgicalHistory: schemas.surgicalHistoryUpdate, userId: int, medicalRecordId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -118,7 +148,12 @@ async def update_medicalRecord(surgicalHistory: schemas.surgicalHistoryUpdate, u
 
 
 @router.put('/update/medicalRecord/chronicConditions/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
-async def update_medicalRecord(chronicConditions: schemas.chronicConditionsUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_medicalRecord(chronicConditions: schemas.chronicConditionsUpdate, userId: int, medicalRecordId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -132,7 +167,12 @@ async def update_medicalRecord(chronicConditions: schemas.chronicConditionsUpdat
 
 
 @router.put('/update/medicalRecord/pastConditions/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
-async def update_medicalRecord(pastConditions: schemas.pastConditionsUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_medicalRecord(pastConditions: schemas.pastConditionsUpdate, userId: int, medicalRecordId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -146,7 +186,12 @@ async def update_medicalRecord(pastConditions: schemas.pastConditionsUpdate, use
 
 
 @router.put('/update/medicalRecord/allergies/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
-async def update_medicalRecord(allergies: schemas.allergiesUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_medicalRecord(allergies: schemas.allergiesUpdate, userId: int, medicalRecordId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -160,7 +205,12 @@ async def update_medicalRecord(allergies: schemas.allergiesUpdate, userId: int, 
 
 
 @router.put('/update/medicalRecord/vaccin/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
-async def update_medicalRecord(vaccin: schemas.vaccinUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_medicalRecord(vaccin: schemas.vaccinUpdate, userId: int, medicalRecordId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -175,7 +225,12 @@ async def update_medicalRecord(vaccin: schemas.vaccinUpdate, userId: int, medica
 
 
 @router.put('/update/medicalRecord/healthCondition/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
-async def update_medicalRecord(healthCondition: schemas.healthConditionUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_medicalRecord(healthCondition: schemas.healthConditionUpdate, userId: int, medicalRecordId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -190,7 +245,12 @@ async def update_medicalRecord(healthCondition: schemas.healthConditionUpdate, u
 
 
 @router.put('/update/medicalRecord/treatment/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
-async def update_medicalRecord(treatment: schemas.treatmentUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_medicalRecord(treatment: schemas.treatmentUpdate, userId: int, medicalRecordId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -203,7 +263,13 @@ async def update_medicalRecord(treatment: schemas.treatmentUpdate, userId: int, 
 
 
 @router.put('/update/medicalRecord/note/{userId}/{medicalRecordId}', description='this update request updates the medical record notes for a certain patient')
-async def update_medicalRecord(note: schemas.NoteUpdate, userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_medicalRecord(note: schemas.NoteUpdate, userId: int, medicalRecordId: int, Authorization: str = Header(None), db: 
+    session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -215,7 +281,12 @@ async def update_medicalRecord(note: schemas.NoteUpdate, userId: int, medicalRec
     return{"message": "Medical Record (note) updated successfully"}
 
 @router.delete('/delete/medicalRecord/{userId}/{medicalRecordId}', description='this delete request deletes the medical record for a certain patient')
-async def deleteMedicalRecord(userId: int, medicalRecordId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def deleteMedicalRecord(userId: int, medicalRecordId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
