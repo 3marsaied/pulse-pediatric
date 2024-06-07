@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, Depends, APIRouter
+from fastapi import HTTPException, status, Depends, APIRouter, Header
 from sqlalchemy.orm import session
 
 import sys
@@ -96,19 +96,23 @@ async def addUser(user: schemas.addUser, adminId: int, token: str, db: session =
 
 
 @router.get("/get/user/{userId}", description="This route returns user data via userId and takes the token in the header", response_model=schemas.User)
-async def get_user_by_id(userId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def get_user_by_id(userId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
+    
     if not token_data:
-        raise HTTPException( status_code=401, detail= "unauthorized")
-    if token_data == False:
-        raise HTTPException( status_code=401, detail= "unauthorized")
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
     user = db.query(models.User).filter(models.User.userId == userId).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
     # Construct the user data dictionary using the schema structure
-   # Construct the user data dictionary using the schema structure
     user_data = {
         "userId": user.userId,
         "firstName": user.firstName,
