@@ -17,3 +17,4 @@ PyJWT
 oauthlib
 requests_oauthlib
 asyncpg
+bcrypt
