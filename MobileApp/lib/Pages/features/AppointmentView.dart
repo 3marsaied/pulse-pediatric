@@ -34,9 +34,14 @@ class _AppointmentViewState extends State<AppointmentView> {
   }
 
   Future<void> _deleteAppointment() async {
-    final url = Uri.parse(routes.deleteAppointment(widget.data['id'], widget.data['parentId'], widget.token!));
+    final url = Uri.parse(routes.deleteAppointment(widget.data['id'], widget.data['parentId']));
     print('Delete Appointment Data: ${widget.data['patientId']} ${widget.token!}');
-    final response = await http.delete(url);
+    final headers = {
+      'accept': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
+    };
+
+    final response = await http.delete(url, headers: headers);
     print("response status: " + response.statusCode.toString());
     if (response.statusCode == 200) {
       print('Appointment Deleted Successfully');

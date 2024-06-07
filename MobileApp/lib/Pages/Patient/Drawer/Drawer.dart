@@ -45,8 +45,13 @@ class _EnddrawerState extends State<Enddrawer> {
   
 
   Future<void> getPatient() async {
-    final url = Uri.parse(routes.yourPatients(widget.parentId, widget.token!));
-    final response = await http.get(url);
+    final url = Uri.parse(routes.yourPatients(widget.parentId));
+    final headers = {
+      'accept': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
+    };
+
+    final response = await http.get(url, headers: headers);
   
       print("get Patient response status: " + response.statusCode.toString());
       if (response.statusCode == 200) {

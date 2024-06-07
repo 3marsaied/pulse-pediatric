@@ -44,9 +44,13 @@ class _AddAppointmentState extends State<AddAppointment> {
   }
 
   Future<void> getPatient() async {
-    final url = Uri.parse(routes.yourPatients(widget.parentId!, widget.token!));
-    final response = await http.get(url);
+    final url = Uri.parse(routes.yourPatients(widget.parentId!));
+    final headers = {
+      'accept': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
+    };
 
+    final response = await http.get(url, headers: headers);
     print("get Patient response status: " + response.statusCode.toString());
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -89,11 +93,14 @@ class _AddAppointmentState extends State<AddAppointment> {
   }
 
   Future<void> addAppointment() async {
-    final url = Uri.parse(routes.addAppointments(widget.token!));
+    final url = Uri.parse(routes.addAppointments);
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
     };
+
+    final response = await http.get(url, headers: headers);
     print('add appointments data: ${widget.parentId} $selectedDoctorId $selectedPatientId $appointmentDate $from ${from!+1}');
     final body = jsonEncode({
       'parentId': widget.parentId!,

@@ -66,11 +66,13 @@ class _EditUserState extends State<EditUser> {
 
 
   Future <void> updateuser() async{
-    final url = Uri.parse(routes.updateUser(widget.userId, widget.token!));
+    final url = Uri.parse(routes.updateUser(widget.userId));
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
     };
+
     var  username;
     var  password;
     var  email;

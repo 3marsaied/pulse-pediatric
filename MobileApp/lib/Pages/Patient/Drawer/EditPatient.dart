@@ -58,11 +58,14 @@ class _EditPatientState extends State<EditPatient> {
   }
 
   Future<void> updatePatient() async {
-    final url = Uri.parse(routes.updatePatient(widget.patientId, widget.parentId, widget.token!));
+    final url = Uri.parse(routes.updatePatient(widget.patientId, widget.parentId));
+    
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
     };
+
     var age;
     var gender;
     var firstName;

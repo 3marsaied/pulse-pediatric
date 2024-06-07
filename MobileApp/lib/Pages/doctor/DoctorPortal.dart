@@ -35,8 +35,13 @@ class _DoctorPortalState extends State<DoctorPortal> {
 
 
   Future<void> getDoctorInfo() async{
-    final url = Uri.parse(routes.doctorInfo(widget.doctorId!, widget.token!));
-    final response = await http.get(url);
+    final url = Uri.parse(routes.doctorInfo(widget.doctorId!));
+    final headers = {
+      'accept': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
+    };
+
+    final response = await http.get(url, headers: headers);
     if (response.statusCode == 200){
       final data = json.decode(response.body);
       String capitalize(String text) {
@@ -62,8 +67,13 @@ class _DoctorPortalState extends State<DoctorPortal> {
   }
 
   Future<void> getAppointment() async {
-    final url = Uri.parse(routes.doctorAppointment(widget.doctorId!, widget.token!));
-    final response = await http.get(url);
+    final url = Uri.parse(routes.doctorAppointment(widget.doctorId!));
+    final headers = {
+      'accept': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
+    };
+
+    final response = await http.get(url, headers: headers);
     if (response.statusCode == 200){
       final data = json.decode(response.body);
       Datas = data;

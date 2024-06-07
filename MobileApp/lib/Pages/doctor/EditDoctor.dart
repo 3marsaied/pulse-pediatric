@@ -38,10 +38,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
+    _usernameController = TextEditingController(text: widget.userName);
     _passwordController = TextEditingController();
-    _emailController = TextEditingController();
-    _priceController = TextEditingController();
+    _emailController = TextEditingController(text: widget.email);
+    _priceController = TextEditingController(text: widget.price?.toString());
   }
 
   @override
@@ -55,11 +55,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
 
   Future <void> updateDoctor() async{
-    final url = Uri.parse(routes.updateDoctor(widget.doctorId, widget.token!));
+    final url = Uri.parse(routes.updateDoctor(widget.doctorId));
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
     };
+
     var  username;
     var  password;
     var  email;
@@ -131,6 +133,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
           onPressed: () {
             Navigator.pop(context);
+            Navigator.push(context,
+              MaterialPageRoute(
+                builder: (context) => DoctorPortal(token: widget.token, doctorId: widget.doctorId),
+              ),
+            );
           },
         ),
         title: Text(

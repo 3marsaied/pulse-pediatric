@@ -48,10 +48,11 @@ class _AddPatientState extends State<AddPatient> {
   }
 
   Future<void> addPatient() async {
-    final url = Uri.parse(routes.addPatient(widget.token!));
+    final url = Uri.parse(routes.addPatient);
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
     };
     var age;
     var gender;

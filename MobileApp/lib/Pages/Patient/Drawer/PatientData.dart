@@ -3,6 +3,7 @@ import 'package:project_name/Pages/Patient/Drawer/EditPatient.dart';
 import 'package:project_name/Pages/Patient/Drawer/EditPatient.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'package:project_name/routes.dart';
 
 
@@ -29,8 +30,12 @@ class _PatientViewState extends State<PatientView> {
   }
 
   Future<void> _deletePatient() async {
-    final url = Uri.parse(routes.deletePatient(widget.parentId!, patientId, widget.token!));
-    final response = await http.delete(url);
+    final url = Uri.parse(routes.deletePatient(widget.parentId!, patientId));
+    final headers = {
+      'Authorization': 'Bearer ${widget.token!}',
+    };
+
+    final response = await http.delete(url, headers: headers);
     print("response status: " + response.statusCode.toString());
     if (response.statusCode == 200) {
       print('Appointment Deleted Successfully');
@@ -98,7 +103,9 @@ class _PatientViewState extends State<PatientView> {
                     width: 24,
                     height: 24,
                     ), onPressed: () async{ await _deletePatient();
-                    Navigator.pop(context);},
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPortal(token: widget.token, userId: widget.parentId)));
+                    },
                   ),
                 
               ],

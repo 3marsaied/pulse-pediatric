@@ -39,9 +39,10 @@ class _PatientPortalState extends State<PatientPortal> {
   }
 
   Future<void> getUserData() async {
-    final url = Uri.parse(routes.getUser(widget.userId!, widget.token!));
+    final url = Uri.parse(routes.getUser(widget.userId!));
     final headers = {
       'accept': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
     };
 
     try {
@@ -76,8 +77,13 @@ class _PatientPortalState extends State<PatientPortal> {
   }
 
   Future<void> getAppointment() async {
-    final url = Uri.parse(routes.getPaitenAppointment(widget.userId!, widget.token!));
-    final response = await http.get(url);
+    final url = Uri.parse(routes.getPaitenAppointment(widget.userId!));
+    final headers = {
+      'accept': 'application/json',
+      'Authorization': 'Bearer ${widget.token!}',
+    };
+
+    final response = await http.get(url, headers: headers);
     if (response.statusCode == 200){
       final data = json.decode(response.body);
       Datas = data;
