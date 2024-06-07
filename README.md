@@ -21,21 +21,34 @@ The mobile application aims to enhance user experience by providing access to th
 ## Features
 
 ### Web Application
+- Landing Page
+  Demo:
+    ![Demo Video](GIFs/landingPageDemo.gif)
+  
 - **Patient Portal:**
   - Appointment scheduling
   - Medical record access
   - Doctor communication
+ Demo:
+    ![Demo Video](GIFs/patientPortalDemo.gif)
+
 - **Doctor Portal:**
   - Patient information management
   - Appointment management
   - Medical history access
-- **Staff Portal:**
-  - Administrative task management
-  - Patient flow coordination
+Demo:
+    ![Demo Video](GIFs/doctorPortalDemo.gif)
+
 - **Admin Panel:**
   - User role management
   - System performance monitoring
   - Clinic settings configuration
+Demo:
+    ![Demo Video](GIFs/adminPanelDemo.gif)
+
+- **Staff Portal:**
+  - Administrative task management
+  - Patient flow coordination
 
 ### Mobile Application
 - **Patient Portal:**
@@ -60,7 +73,7 @@ The mobile application aims to enhance user experience by providing access to th
 #### Web Application
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/pediatric-clinic.git
+    git clone https://github.com/AssemSadek90/pediatric-pulse.git
     ```
 2. Navigate to the project directory:
     ```bash
@@ -70,25 +83,29 @@ The mobile application aims to enhance user experience by providing access to th
     ```bash
     npm install
     ```
-4. Run the application:
+4. Create .env.local file and add to it:
+    ```bash
+    NEXT_PUBLIC_SERVER_NAME= "backend url"
+    ```
+5. Run the application:
     ```bash
     npm run dev
     ```
-5. Open your web browser and go to:
+6. Open your web browser and go to:
     ```
     http://localhost:3000
     ```
 
 #### Mobile Application
 - Download the APK file from the link below:
-  [Download APK](https://drive.google.com/uc?export=download&id=1SytD4rQxmdjy4ixm1Odtz4UqUjFXSlVc
-) (Replace `#` with the actual link to your APK file)
+  [Download APK](https://drive.google.com/uc?export=download&id=1SytD4rQxmdjy4ixm1Odtz4UqUjFXSlVc)
+  
 - Install the APK on your Android device.
 
 ## API Documentation
 
 For detailed API documentation, please refer to our API documentation:
-[API Documentation](https://pediatric-pulse.onrender.com) (Replace `#` with the actual link to your API documentation)
+[API Documentation](https://pediatric-pulse.onrender.com)
 
 
 ## Contact
