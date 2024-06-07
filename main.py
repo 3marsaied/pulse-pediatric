@@ -5,6 +5,7 @@ from routes import auth, user, doctor, patient, appointment, MedicalRecord, revi
 from starlette.responses import RedirectResponse
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
+import scheduler
 
 # Create database tables
 base.metadata.create_all(bind=engine)
@@ -58,9 +59,14 @@ def custom_openapi():
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
+
+
 app.openapi = custom_openapi
 
 # Redirect root to Swagger UI
 @app.get("/", include_in_schema=False)
 async def root():
     return RedirectResponse(url="/docs")
+
+# Start the scheduler
+scheduler.start_scheduler()

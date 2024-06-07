@@ -1,18 +1,20 @@
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
 from dotenv import load_dotenv
-import os
 
+# Load environment variables
 load_dotenv()
 
 SQLALCHEMY_DATABASE_URL = os.getenv('DB_URL')
 
+# Establish database connection
 try:
     engine = create_engine(SQLALCHEMY_DATABASE_URL)
     connected = True
-except SQLAlchemyError as e:
+except SQLAlchemyError as e:  # Ensure SQLAlchemyError is imported correctly
     print(f"An error occurred while connecting to the database: {e}")
     connected = False
 

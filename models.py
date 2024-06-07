@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, text, FLOAT
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, text, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from DataBase import base
@@ -55,10 +55,11 @@ class Appointment(base):
     parentId = Column(Integer, ForeignKey('user.userId'), nullable=False)
     doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
     patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)
-    appointmentDate = Column(String, nullable=False)
+    appointmentDate = Column(Date, nullable=False)
     From = Column(String, nullable=False)
     To = Column(String, nullable=False)
-    isTaken = Column(Boolean, default=False)  # Change data type for appointmentStatus
+    isTaken = Column(Boolean, default=False)
+    Paied = Column(Boolean, default=False)
     user = relationship('User', back_populates='appointments')
     doctor = relationship('Doctor', back_populates='appointments')
 
