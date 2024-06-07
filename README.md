@@ -73,7 +73,7 @@ Demo:
 #### Web Application
 1. Clone the repository:
     ```bash
-    git clone https://github.com/AssemSadek90/pediatric-pulse.git
+    git clone https://github.com/3marsaied/pulse-pediatric.git
     ```
 2. Navigate to the project directory:
     ```bash
