@@ -3,10 +3,7 @@ from sqlalchemy.orm import session
 from datetime import datetime
 from typing import List
 import pprint
-import locale
 
-# Set locale to English (United Kingdom) to ensure the desired date format
-locale.setlocale(locale.LC_TIME, 'en_GB.UTF-8')
 
 import sys
 
