@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, Depends, APIRouter
+from fastapi import HTTPException, status, Depends, APIRouter, Header
 from sqlalchemy.orm import session
 from typing import List
 import pprint
@@ -19,7 +19,12 @@ router = APIRouter(
 
 
 @router.post("/add/appointment", status_code=status.HTTP_201_CREATED, description="This is a post request add a new appointment")
-async def add_appointment(appointment: schemas.addApointment, token: str, db: session = Depends(DataBase.get_db)):
+async def add_appointment(appointment: schemas.addApointment, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(appointment.parentId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -54,7 +59,12 @@ async def add_appointment(appointment: schemas.addApointment, token: str, db: se
 
 
 @router.post("/add/appointment/{adminId}", status_code=status.HTTP_201_CREATED, description="This is a post request add a new appointment")
-async def add_appointment(appointment: schemas.addApointment, adminId:int, token: str, db: session = Depends(DataBase.get_db)):
+async def add_appointment(appointment: schemas.addApointment, adminId:int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -88,7 +98,12 @@ async def add_appointment(appointment: schemas.addApointment, adminId:int, token
     return{"message": "Appointment added successfully"}
 
 @router.get("/get/appointment/{parentId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
-async def get_appointment(parentId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def get_appointment(parentId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(parentId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -121,7 +136,12 @@ async def get_appointment(parentId: int, token: str, db: session = Depends(DataB
 
 
 @router.get("/get/doctor/appointments/table/{doctorId}/{userId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
-async def get_appointment(doctorId: int, userId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def get_appointment(doctorId: int, userId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -180,7 +200,12 @@ async def get_appointment(db: session = Depends(DataBase.get_db)):
     return Data 
 
 @router.get('/get/all/appointments/{adminId}', description="This route returns all appointments")
-async def get_appointment(adminId:int, token:str, db: session = Depends(DataBase.get_db)):
+async def get_appointment(adminId:int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException(status_code=401, detail="unauthorized")
@@ -213,7 +238,12 @@ async def get_appointment(adminId:int, token:str, db: session = Depends(DataBase
 
 
 @router.get("/get/all/appointments/table/{adminId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
-async def get_appointment(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def get_appointment(adminId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException(status_code=401, detail="unauthorized")
@@ -248,7 +278,12 @@ async def get_appointment(adminId: int, token: str, db: session = Depends(DataBa
     return Data
 
 @router.get('/get/appointment/{appointmentId}/{adminId}') 
-async def get_appointment(appointmentId:int, adminId:int, token:str, db: session = Depends(DataBase.get_db)):
+async def get_appointment(appointmentId:int, adminId:int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException(status_code=401, detail="unauthorized")
@@ -275,7 +310,12 @@ async def get_appointment(appointmentId:int, adminId:int, token:str, db: session
     return appointment_data 
 
 @router.get('/get/all/appointments/{staffId}', description="This route returns all appointments")
-async def get_all_appointments(staffId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def get_all_appointments(staffId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(staffId, token)
     if not token_data:
         raise HTTPException(status_code=401, detail="unauthorized")
@@ -318,10 +358,15 @@ async def get_all_appointments(staffId: int, token: str, db: session = Depends(D
 async def update_appointments(
     adminId: int,
     appointmentId: int,
-    token: str,
     appointment: schemas.updateAppointment,
+    Authorization: str = Header(None),
     db: session = Depends(DataBase.get_db)
 ):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException(status_code=401, detail="unauthorized")
@@ -349,7 +394,12 @@ async def update_appointments(
 
 
 @router.delete("/delete/appointment/{appointmentId}/{adminId}", status_code=status.HTTP_200_OK, description="This is a delete request to delete an appointment")
-async def delete_appointment(appointmentId: int, adminId:int, token: str, db: session = Depends(DataBase.get_db)):
+async def delete_appointment(appointmentId: int, adminId:int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
