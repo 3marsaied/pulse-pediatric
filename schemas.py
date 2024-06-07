@@ -191,7 +191,6 @@ class addAppointment(BaseModel):
     appointmentDate: str
     From: str
     To: str
-    Paied: bool
     isTaken: bool
 
     @validator('appointmentDate')

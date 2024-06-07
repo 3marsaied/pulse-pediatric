@@ -42,7 +42,7 @@ async def add_appointment(appointment: schemas.addAppointment, Authorization: st
         From = appointment.From,
         To = appointment.To,
         isTaken = appointment.isTaken,
-        Paied = appointment.Paied
+        Paied = False
     )
     db.add(new_appointment)
     db.commit()
@@ -83,7 +83,7 @@ async def add_appointment(appointment: schemas.addAppointment, adminId:int, Auth
         From = appointment.From,
         To = appointment.To,
         isTaken = appointment.isTaken,
-        Paied = appointment.Paied
+        Paied = False
     )
     db.add(new_appointment)
     db.commit()
