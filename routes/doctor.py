@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, Depends, APIRouter
+from fastapi import HTTPException, status, Depends, APIRouter, Header
 from sqlalchemy.orm import session
 
 import sys
@@ -18,7 +18,12 @@ router = APIRouter(
 import random
 
 @router.post("/add/doctor/{adminId}", status_code=status.HTTP_201_CREATED, description="This is a post request to create doctor.", response_model=schemas.UserLoginResponse)
-async def CreateUser(user: schemas.addDoctor,adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def CreateUser(user: schemas.addDoctor,adminId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -76,7 +81,12 @@ async def CreateUser(user: schemas.addDoctor,adminId: int, token: str, db: sessi
 
 
 @router.get("/get/doctor/{doctorId}/{userId}", description="This route returns doctor data via doctorId and takes the token in the header")
-async def get_user_by_id(doctorId: int, userId:int, token: str, db: session = Depends(DataBase.get_db), response_model=schemas.Doctor):
+async def get_user_by_id(doctorId: int, userId:int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db), response_model=schemas.Doctor):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -107,6 +117,7 @@ async def get_user_by_id(doctorId: int, userId:int, token: str, db: session = De
 
 @router.get("/doctorList", description="This is a GET request to fetch all doctors.", response_model=list[schemas.doctorList])
 async def doctorList(db: session = Depends(DataBase.get_db)):
+    
     users = db.query(models.Doctor).all()
 
     if not users:
@@ -139,7 +150,12 @@ async def doctorList(db: session = Depends(DataBase.get_db)):
     return doctors_data
 
 @router.get('/get/all/doctors/{adminId}', description="This route returns all the doctors")
-async def get_doctors(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def get_doctors(adminId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -167,7 +183,12 @@ async def get_doctors(adminId: int, token: str, db: session = Depends(DataBase.g
 
 
 @router.get('/get/doctor/{doctorId}', description="This route returns the doctor's info")
-async def getDoctor(doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def getDoctor(doctorId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(doctorId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -191,7 +212,12 @@ async def getDoctor(doctorId: int, token: str, db: session = Depends(DataBase.ge
     return new_doctor
 
 @router.get('/get/doctor/{doctorId}/{adminId}', description="This route returns the doctor's info")
-async def getDoctor(doctorId: int, adminId:int, token: str, db: session = Depends(DataBase.get_db)):
+async def getDoctor(doctorId: int, adminId:int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -215,7 +241,12 @@ async def getDoctor(doctorId: int, adminId:int, token: str, db: session = Depend
     return new_doctor
 
 @router.get('/get/doctors/total/price/{adminId}', description="This route returns the doctor's reviews")
-async def getDoctorsTotalPrice(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def getDoctorsTotalPrice(adminId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -231,7 +262,12 @@ async def getDoctorsTotalPrice(adminId: int, token: str, db: session = Depends(D
     return {'totalPrice':totalPrice}
 
 @router.get('/get/Number/of/doctors/{adminId}', description="This route returns the doctor's reviews")
-async def getDoctorsTotalPrice(adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def getDoctorsTotalPrice(adminId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -243,7 +279,12 @@ async def getDoctorsTotalPrice(adminId: int, token: str, db: session = Depends(D
     return {"totalNumberOfDoctors":totalPrice}
 
 @router.put("/update/doctor/{doctorId}", description="This route updates the doctor's info", response_model=schemas.Doctor)
-async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(doctorId ,token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -289,7 +330,12 @@ async def update_doctor(doctor: schemas.updateDoctor,doctorId: int, token: str, 
     return newDoctor
 
 @router.put("/update/doctor/admin/{adminId}", description="This route updates the doctor's info")
-async def update_doctor(doctor: schemas.update_doctor,adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_doctor(doctor: schemas.update_doctor,adminId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId ,token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
@@ -341,7 +387,12 @@ async def update_doctor(doctor: schemas.update_doctor,adminId: int, token: str, 
 
 
 @router.delete("/delete/doctor/{doctorId}/{adminId}", description="This route deletes the doctor")
-async def delete_doctor(doctorId: int, adminId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def delete_doctor(doctorId: int, adminId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(adminId, token)
     if not token_data:
         raise HTTPException( status_code=401, detail= "unauthorized")
