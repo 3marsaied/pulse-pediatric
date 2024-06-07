@@ -212,7 +212,12 @@ async def getUserTotalPrice(adminId: int, token: str, db: session = Depends(Data
     return {"totalNumberOfCustomers":customers, "totalNumberOfAdmins":admins, "totalNumberOfStaff":staff}
 
 @router.put("/update/user/{userId}", description="This route updates the user's info", response_model = schemas.User)
-async def update_user(user: schemas.updateUser, userId: int, token: str, db: session = Depends(DataBase.get_db)):
+async def update_user(user: schemas.updateUser, userId: int,Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
     token_data = oauth2.verify_access_token(userId ,token)
     if not token_data:
         raise HTTPException(status_code=401, detail="Invalid token")
