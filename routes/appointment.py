@@ -19,7 +19,7 @@ router = APIRouter(
 
 
 @router.post("/add/appointment", status_code=status.HTTP_201_CREATED, description="This is a post request add a new appointment")
-async def add_appointment(appointment: schemas.addApointment, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+async def add_appointment(appointment: schemas.addAppointment, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
     if not Authorization:
         raise HTTPException(status_code=401, detail="Authorization header missing")
 
@@ -41,7 +41,8 @@ async def add_appointment(appointment: schemas.addApointment, Authorization: str
         appointmentDate = appointment.appointmentDate,
         From = appointment.From,
         To = appointment.To,
-        isTaken = appointment.isTaken
+        isTaken = appointment.isTaken,
+        Paied = appointment.Paied
     )
     db.add(new_appointment)
     db.commit()
@@ -59,7 +60,7 @@ async def add_appointment(appointment: schemas.addApointment, Authorization: str
 
 
 @router.post("/add/appointment/{adminId}", status_code=status.HTTP_201_CREATED, description="This is a post request add a new appointment")
-async def add_appointment(appointment: schemas.addApointment, adminId:int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+async def add_appointment(appointment: schemas.addAppointment, adminId:int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
     if not Authorization:
         raise HTTPException(status_code=401, detail="Authorization header missing")
 
@@ -81,7 +82,8 @@ async def add_appointment(appointment: schemas.addApointment, adminId:int, Autho
         appointmentDate = appointment.appointmentDate,
         From = appointment.From,
         To = appointment.To,
-        isTaken = appointment.isTaken
+        isTaken = appointment.isTaken,
+        Paied = appointment.Paied
     )
     db.add(new_appointment)
     db.commit()
@@ -131,6 +133,7 @@ async def get_appointment(parentId: int, Authorization: str = Header(None), db: 
             "From": apointment.From,
             "To": apointment.To,
             "isTaken": apointment.isTaken,
+            "Paied": apointment.Paied
         })
     return Data
 
@@ -162,6 +165,7 @@ async def get_appointment(doctorId: int, userId: int, Authorization: str = Heade
             "From": apointment.From,
             "To": apointment.To,
             "isTaken": apointment.isTaken,
+            "Paied": apointment.Paied
         })
     return Data
 
@@ -193,6 +197,7 @@ async def get_appointment(db: session = Depends(DataBase.get_db)):
             "From": appointment.From,
             "To": appointment.To,
             "isTaken": appointment.isTaken,
+            "Paied": appointment.Paied
         }
         
         Data.append(appointment_data)
@@ -229,6 +234,7 @@ async def get_appointment(adminId:int, Authorization: str = Header(None), db: se
             "appointmentDate": appointment.appointmentDate,
             "From": appointment.From,
             "To": appointment.To,
+            "Paied": appointment.Paied
         }
         
         Data.append(appointment_data)
@@ -271,6 +277,7 @@ async def get_appointment(adminId: int, Authorization: str = Header(None), db: s
             "From": appointment.From,
             "To": appointment.To,
             "isTaken": appointment.isTaken,
+            "Paied": appointment.Paied
         }
         
         Data.append(appointment_data)
@@ -304,6 +311,7 @@ async def get_appointment(appointmentId:int, adminId:int, Authorization: str = H
         "appointmentDate": appointment.appointmentDate,
         "From": appointment.From,
         "To": appointment.To,
+        "Paied": appointment.Paied
     }
         
     
@@ -343,6 +351,7 @@ async def get_all_appointments(staffId: int, Authorization: str = Header(None), 
             "From": appointment.From,
             "To": appointment.To,
             "isTaken": appointment.isTaken,
+            "Paied": appointment.Paied
         }
         
         Data.append(appointment_data)

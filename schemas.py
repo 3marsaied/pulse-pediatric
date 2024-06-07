@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -183,14 +184,23 @@ class addPatient(BaseModel):
     parentId: int
 
 
-class addApointment(BaseModel):
+class addAppointment(BaseModel):
     parentId: int
     doctorId: int
     patientId: int
     appointmentDate: str
     From: str
     To: str
+    Paied: bool
     isTaken: bool
+
+    @validator('appointmentDate')
+    def validate_appointment_date(cls, value):
+        try:
+            datetime.strptime(value, '%d/%m/%Y')
+        except ValueError:
+            raise ValueError('appointmentDate must be in the format "dd/mm/yyyy"')
+        return value
 
 
 
