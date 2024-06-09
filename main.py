@@ -1,4 +1,6 @@
+import os
 from fastapi import FastAPI
+import uvicorn
 from DataBase import engine
 from models import base
 from routes import auth, user, doctor, patient, appointment, MedicalRecord, reviews
@@ -70,3 +72,9 @@ async def root():
 
 # Start the scheduler
 scheduler.start_scheduler()
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
+
