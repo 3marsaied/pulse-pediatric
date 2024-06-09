@@ -320,3 +320,6 @@ class medicationsUpdate(BaseModel):
 
 class radiologyReportUpdate(BaseModel):
     radiologyReport: str
+
+
+    
