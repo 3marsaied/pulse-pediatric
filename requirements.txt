@@ -19,3 +19,4 @@ requests_oauthlib
 asyncpg
 bcrypt
 apscheduler
+firebase-admin
