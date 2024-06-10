@@ -21,3 +21,5 @@ asyncpg
 bcrypt
 apscheduler
 firebase-admin
+pyfcm
+pywebpush
