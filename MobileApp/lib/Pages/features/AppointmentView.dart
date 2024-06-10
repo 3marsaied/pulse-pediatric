@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'package:project_name/routes.dart';
 import 'dart:convert';
- 
 import 'package:http/http.dart' as http;
 
 String formatHour(String hour) {
@@ -80,13 +79,12 @@ class _AppointmentViewState extends State<AppointmentView> {
                   child: Text(
                     'Delete',
                     style: TextStyle(fontSize: 18),
-                    ),
+                  ),
                 ),
               ],
             ),
           ],
         );
-
       },
     );
 
@@ -107,7 +105,11 @@ class _AppointmentViewState extends State<AppointmentView> {
 
     var from = formatHour(widget.data['From']); // Format 'From' time to AM/PM
     var to = formatHour(widget.data['To']); // Format 'To' time to AM/PM
-    var date = '${widget.data['appointmentDate']} From: $from To: $to';
+
+    // Parse the appointment date and format it
+    DateTime appointmentDate = DateTime.parse(widget.data['appointmentDate']);
+    String formattedDate = DateFormat('EEE dd-MM-yyyy').format(appointmentDate);
+    var date = '$formattedDate From: $from To: $to';
 
     return Container(
       child: Padding(
@@ -171,7 +173,7 @@ class _AppointmentViewState extends State<AppointmentView> {
                           ),
                         ),
                     ],
-                  ]
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
@@ -205,14 +207,12 @@ class _AppointmentViewState extends State<AppointmentView> {
                             fontSize: 14,
                           ),
                         ),
-                      ]
-                      else ...[
+                      ] else ...[
                         Text('Dr.${doctorName}', 
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                        )
-                        ),
+                          fontSize: 18,
+                        )),
                         Row(
                           children: [
                             Text(
@@ -239,7 +239,6 @@ class _AppointmentViewState extends State<AppointmentView> {
                           ),
                         ),
                       ],
-                  
                     ],
                   ),
                 ),
@@ -254,7 +253,6 @@ class _AppointmentViewState extends State<AppointmentView> {
                     await _confirmDeleteAppointment();
                   },
                 ) : Container(),
-            
               ],
             ),
             Divider(color: const Color.fromARGB(255, 194, 193, 193),)
