@@ -81,9 +81,15 @@ def send_notification(appointment, fcms):
             print("Failed to send notification")
             print(response.text)
 
+def keep_awake():
+    print("Keeping server awake...")
+
 def start_scheduler():
     scheduler = BackgroundScheduler()
     scheduler.add_job(delete_last_year_appointments, 'cron', year='*', month='1', day='1', hour='0', minute='0')
     scheduler.add_job(send_notifications, 'cron', minute='*')
+    scheduler.add_job(keep_awake, 'interval', seconds=1)
     scheduler.start()
 
+if __name__ == "__main__":
+    start_scheduler()
