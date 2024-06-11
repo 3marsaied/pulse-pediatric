@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "pulse-pediatric",
+  "private_key_id": "c63912101c35dc811bbf9b7a8e64667676f9c5d2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCrTXxMyGWXPYmf\n9uLcX/QzKk161qRQuofrS47JpTDANXoYuCuqdC1x8K9cZfmP/X2UqsA5x4uL9hik\nIA3V+7xRXRRxxk/rStDL3RgZkEZnEMAIn4JsSFWXpoGMcCt7o3hKlf3xBCoetrYq\naIURDSqNEDdqCpNqi70RZ7xWMnsvbicpH1tXqsC9CDEI8qyX9xu6pYhBdDyc08WJ\nw0wBJrBF6t5dCRGEEfle8e7rbYNgzEITqpYg52rJvGb8BddcqkYFVm9EwpgUR0dG\nJK4GSNEQhTfoFQa2UJuP1VgLI6qfMqmMRfajZtAmXaV+z6YRAc+lnaWbk9MctHVs\nl8PZ5/xVAgMBAAECggEAAIL7/M+5a/T5WQK4BT/9Hv0Am74R4hLYjpWccNI/Pce7\nHGFKchkkPJujLnO4hdtUOXI0HkgQDOQ4iR72Y537n0OXqMpWmUWRL5ayuHrTlwG4\nDR6K2W9y3//VkbmRC66+kHx3tHVWed6CV0iWIymmp6K1g6nR7GbL8wYcDCbc8tSQ\nZQDEffzmyfrRWfFbkjPavi4+oRFhxqPvikXiv2EBlANNG7Xo2XAepwSzwT8Hfzdo\nbb55/1DKj7cd5d1eoF0fAh4KjlDxuMPC7mjmNeyEjOLzZe5Rotx2piDR90DM9n6a\ni/mdOdvnBl0py2mlT8Wzph4RScngCRExZnMGTI2t0QKBgQDe5Q7jRjbWsa1rwVLo\nVaDi1mipFmRXL7IqnSAPC1x6wl3p4CLpAjzj/VkemzZvVjhggnFPaNMcHdK59fyQ\now7BX8GI/VeyhxeVi0S0vitoKaMoKkc2S+hB1JUgieIBRfjfkstDeQc/9f6rqPyY\nL/Vxxc4t4KwGSkMlxkEclNsI5QKBgQDEvsjftBW32YTXP4ED72OyzA9ZCbLrm+9Y\nm6bOwnRHJOS+2mH+NA8peKxmcydkzZAYS7UzX8DFBJwKjgYEtA12mmaSxE+13vH4\nx9jzTQwdgIwHZT6F9omvmUnm+twGeDLeeB/fVquRJf1Wls0z6YgOVeHmbTSJOCbP\nTNpqWvwesQKBgQCNdcA6G6DIJyGSBrLQgy/FZyArV+u8raechfYHtkUuH9csjDR7\nvxDX/T0nQIiOpqDHF2JEbJm2+XJ41RZC0UmXDmeswmR7CGO+ZBHpx9uSkwJahmKF\noi04QmuWqAuIlVj6w5Y/Lzubq0rCtVACYkWavFg7I6DpqQ3ulmFSe2J7xQKBgCVf\nXEbqLWnz/sDohjhaI+UV0CCIsB0DTO7W+lOyKmZNQspiL1UbTHoDOzRm0WfbiHCl\nCPGOUc7a9k0m90uzbA9Iew2MDtwsUmiAhdyJmTCNd4v8FmlaEINzqc8ffeYYtQj/\nZoaFLyfuQHZPRQGEbdzTQYsE2YLrUKv2HFMxn0yxAoGAKH4Skl+IAGP4zABMMTLk\nhgLkxruKqL3TaYFc0LaeyGuilTJEJ7vJzVh/YStZutxBkr5SlFw9sWpQawv5kYWk\nqBBJh4pacbNgz9pqq6Jt9SElHBfTE86cI9XQBrN54BSTpqTy6MOxr6kRD+Ehi1kt\nB9a7IcfbcA82o/wqzfhV11o=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-c7jc9@pulse-pediatric.iam.gserviceaccount.com",
+  "client_id": "110429919976873964663",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-c7jc9%40pulse-pediatric.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
