@@ -33,7 +33,7 @@ async def add_appointment(appointment: schemas.addAppointment, Authorization: st
     if token_data == False:
         raise HTTPException( status_code=401, detail= "unauthorized")
 
-    Appointment = db.query(models.Appointment).filter(models.Appointment.appointmentDate == appointment.appointmentDate).filter(models.Appointment.From == appointment.From).filter(models.Appointment.To == appointment.To).first()
+    Appointment = db.query(models.Appointment).filter(models.Appointment.appointmentDate == appointment.appointmentDate).filter(models.Appointment.fromTime == appointment.From).filter(models.Appointment.toTime == appointment.To).first()
     if Appointment:
         return {"message": " Appointment already exists"}
     new_appointment = models.Appointment(
@@ -74,7 +74,7 @@ async def add_appointment(appointment: schemas.addAppointment, adminId:int, Auth
     if token_data == False:
         raise HTTPException( status_code=401, detail= "unauthorized")
 
-    Appointment = db.query(models.Appointment).filter(models.Appointment.appointmentDate == appointment.appointmentDate).filter(models.Appointment.From == appointment.From).filter(models.Appointment.To == appointment.To).first()
+    Appointment = db.query(models.Appointment).filter(models.Appointment.appointmentDate == appointment.appointmentDate).filter(models.Appointment.fromTime == appointment.From).filter(models.Appointment.toTime == appointment.To).first()
     if Appointment:
         return {"message": " Appointment already exists"}
     new_appointment = models.Appointment(
