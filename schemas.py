@@ -5,6 +5,9 @@ from typing import Optional
 from pydantic import BaseModel
 from typing import Optional
 
+class FCM (BaseModel):
+    fcmToken: str
+    userId: int
 class _User (BaseModel):
     id: int
     firstName: str
