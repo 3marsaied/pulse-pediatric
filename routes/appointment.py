@@ -41,8 +41,8 @@ async def add_appointment(appointment: schemas.addAppointment, Authorization: st
         doctorId = appointment.doctorId,
         patientId = appointment.patientId,
         appointmentDate = appointment.appointmentDate,
-        From = appointment.From,
-        To = appointment.To,
+        fromTime = appointment.From,
+        toTime = appointment.To,
         isTaken = appointment.isTaken,
         Paied = False
     )
@@ -82,8 +82,8 @@ async def add_appointment(appointment: schemas.addAppointment, adminId:int, Auth
         doctorId = appointment.doctorId,
         patientId = appointment.patientId,
         appointmentDate = appointment.appointmentDate,
-        From = appointment.From,
-        To = appointment.To,
+        fromTime = appointment.From,
+        toTime = appointment.To,
         isTaken = appointment.isTaken,
         Paied = False
     )
@@ -134,8 +134,8 @@ async def get_appointment(parentId: int, Authorization: str = Header(None), db: 
             "doctorFirstName": doctor.firstName,
             "doctorLastName": doctor.lastName,
             "appointmentDate": appointment_date,
-            "From": apointment.From,
-            "To": apointment.To,
+            "From": apointment.fromTime,
+            "To": apointment.toTime,
             "isTaken": apointment.isTaken,
             "Paied": apointment.Paied
         })
@@ -168,8 +168,8 @@ async def get_appointment(doctorId: int, userId: int, Authorization: str = Heade
             "parentLastName": user.lastName,
             "parentPic": user.profilePicture,
             "appointmentDate": appointment_date,
-            "From": apointment.From,
-            "To": apointment.To,
+            "From": apointment.fromTime,
+            "To": apointment.toTime,
             "isTaken": apointment.isTaken,
             "Paied": apointment.Paied
         })
@@ -202,8 +202,8 @@ async def get_appointment(db: session = Depends(DataBase.get_db)):
             "doctorLastName": doctor.lastName,
             "parentPic": user.profilePicture,
             "appointmentDate": appointment_date,
-            "From": appointment.From,
-            "To": appointment.To,
+            "From": appointment.fromTime,
+            "To": appointment.toTime,
             "isTaken": appointment.isTaken,
             "Paied": appointment.Paied
         }
@@ -241,8 +241,8 @@ async def get_appointment(adminId:int, Authorization: str = Header(None), db: se
             "doctorLastName": doctor.lastName,
             "doctorId": doctor.id,
             "appointmentDate": appointment_date,
-            "From": appointment.From,
-            "To": appointment.To,
+            "From": appointment.fromTime,
+            "To": appointment.toTime,
             "Paied": appointment.Paied
         }
         
@@ -284,8 +284,8 @@ async def get_appointment(adminId: int, Authorization: str = Header(None), db: s
             "doctorLastName": doctor.lastName,
             "parentPic": user.profilePicture,
             "appointmentDate": appointment_date,
-            "From": appointment.From,
-            "To": appointment.To,
+            "From": appointment.fromTime,
+            "To": appointment.toTime,
             "isTaken": appointment.isTaken,
             "Paied": appointment.Paied
         }
@@ -320,8 +320,8 @@ async def get_appointment(appointmentId:int, adminId:int, Authorization: str = H
         "doctorLastName": doctor.lastName,
         "doctorId": doctor.id,
         "appointmentDate": appointment_date,
-        "From": appointment.From,
-        "To": appointment.To,
+        "From": appointment.fromTime,
+        "To": appointment.toTime,
         "Paied": appointment.Paied
     }
         
@@ -360,8 +360,8 @@ async def get_all_appointments(staffId: int, Authorization: str = Header(None), 
             "doctorLastName": doctor.lastName,
             "parentPic": user.profilePicture,
             "appointmentDate": appointment_date,
-            "From": appointment.From,
-            "To": appointment.To,
+            "From": appointment.fromTime,
+            "To": appointment.toTime,
             "isTaken": appointment.isTaken,
             "Paied": appointment.Paied
         }
@@ -401,8 +401,8 @@ async def update_appointments(
     update_data = {
         "doctorId":appointment.doctorId if appointment.doctorId is not None else existing_appointment.doctorId,
         "appointmentDate": appointment.appointmentDate if appointment.appointmentDate is not None else existing_appointment.appointmentDate,
-        "From": appointment.From if appointment.From is not None else existing_appointment.From,
-        "To": appointment.To if appointment.To is not None else existing_appointment.To,
+        "fromTime": appointment.From if appointment.From is not None else existing_appointment.fromtime,
+        "toTime": appointment.To if appointment.To is not None else existing_appointment.toTime,
         "isTaken": True
     }
 
