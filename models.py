@@ -94,6 +94,13 @@ class MRAccess(base):
     doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
     access = Column(Boolean, default=True)
 
+class fcm(base):
+    __tablename__ = 'FCM'
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
+    fcmToken = Column(String, nullable=False)
+    userId = Column(Integer, ForeignKey('user.userId'), nullable=False)
+
+
 # class history(base):
 #     __tablename__ = 'history'
 #     id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
