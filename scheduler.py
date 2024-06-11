@@ -82,7 +82,7 @@ def send_notification(appointment, fcms):
             print(response.text)
 
 def keep_awake():
-    print("Keeping server awake...")
+    print("")
 
 def start_scheduler():
     scheduler = BackgroundScheduler()
