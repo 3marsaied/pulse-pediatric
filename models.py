@@ -55,7 +55,7 @@ class Appointment(base):
     parentId = Column(Integer, ForeignKey('user.userId'), nullable=False)
     doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
     patientId = Column(Integer, ForeignKey('patient.id'), nullable=False)
-    appointmentDate = Column(Date, nullable=False)
+    appointmentDate = Column(String, nullable=False)
     fromTime = Column(String, nullable=False)
     toTime = Column(String, nullable=False)
     isTaken = Column(Boolean, default=False)
