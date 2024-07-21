@@ -196,13 +196,6 @@ class addAppointment(BaseModel):
     To: str
     isTaken: bool
 
-    @validator('appointmentDate')
-    def validate_appointment_date(cls, value):
-        try:
-            datetime.strptime(value, '%d/%m/%Y')
-        except ValueError:
-            raise ValueError('appointmentDate must be in the format "dd/mm/yyyy"')
-        return value
 
 
 
