@@ -23,4 +23,3 @@ apscheduler
 firebase-admin
 pyfcm
 pywebpush
-aiohttp
