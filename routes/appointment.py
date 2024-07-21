@@ -142,6 +142,47 @@ async def get_appointment(parentId: int, Authorization: str = Header(None), db: 
     return Data
 
 
+
+@router.get("/get/appointment/{parentId}/{patientId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
+async def get_appointment(parentId: int, patientId:int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
+    if not Authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    # Extract token from "Bearer <token>"
+    token = Authorization.split(" ")[1]
+    token_data = oauth2.verify_access_token(parentId, token)
+    if not token_data:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    if token_data == False:
+        raise HTTPException( status_code=401, detail= "unauthorized")
+    appointments = db.query(models.Appointment).filter(models.Appointment.parentId == parentId).filter(models.Appointment.patientId == patientId).all()
+    Data = []
+    for apointment in appointments:
+        user = db.query(models.User).filter(models.User.userId == apointment.parentId).first()
+        patient = db.query(models.Patient).filter(models.Patient.id == apointment.patientId).first()
+        doctor = db.query(models.Doctor).filter(models.Doctor.id == apointment.doctorId).first()
+        appointment_date = apointment.appointmentDate
+        
+        Data.append({
+            "id": apointment.id,
+            "parentId": user.userId,
+            "patientId": patient.id,
+            "doctorId": apointment.doctorId,
+            "patientFirstName": patient.firstName,
+            "parentFirstName": user.firstName,
+            "parentLastName": user.lastName,
+            "parentPic": user.profilePicture,
+            "doctorPic": doctor.profilePicture,
+            "doctorFirstName": doctor.firstName,
+            "doctorLastName": doctor.lastName,
+            "appointmentDate": appointment_date,
+            "From": apointment.fromTime,
+            "To": apointment.toTime,
+            "isTaken": apointment.isTaken,
+            "Paied": apointment.Paied
+        })
+    return Data
+
 @router.get("/get/doctor/appointments/table/{doctorId}/{userId}", status_code=status.HTTP_200_OK, description="This is a get request to get all appointments of a patient")
 async def get_appointment(doctorId: int, userId: int, Authorization: str = Header(None), db: session = Depends(DataBase.get_db)):
     if not Authorization:
