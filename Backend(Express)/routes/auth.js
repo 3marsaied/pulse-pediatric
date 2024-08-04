@@ -17,7 +17,7 @@ router.post('/login', async (req, res) => {
             const isMatchDoctor = await verifyPassword(password, existingDoctor.password);
             if (isMatchDoctor) {
                 const accessToken = createAccessToken(existingDoctor.id);
-                return res.json({ accessToken, role: existingDoctor.role, userId: existingDoctor.id });
+                return res.json([{ accessToken, role: existingDoctor.role, userId: existingDoctor.id }]);
             }
             else{
                 res.status(401).json({ message: "Invalid credentials" });
@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
             const isMatchUser = await verifyPassword(password, existingUser.password);
             if (isMatchUser) {
                 const accessToken = createAccessToken(existingUser.id);
-                return res.json({ accessToken, role: existingUser.role, userId: existingUser.userId });
+                return res.json([{ accessToken, role: existingUser.role, userId: existingUser.userId }]);
             }
             else{
                 res.status(401).json({ message: "Invalid credentials" });
