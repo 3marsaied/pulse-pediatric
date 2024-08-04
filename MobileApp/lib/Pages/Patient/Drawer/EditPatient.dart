@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:project_name/Pages/Patient/Child/childAppointment.dart';
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'dart:convert';
 import 'package:project_name/routes.dart';
@@ -12,6 +13,7 @@ class EditPatient extends StatefulWidget {
   final String? gender;
   final String? firstName;
   final String? lastName;
+  final String? childName;
 
   const EditPatient({
     Key? key,
@@ -21,7 +23,8 @@ class EditPatient extends StatefulWidget {
     this.firstName,
     this.lastName,
     this.age,
-    this.gender,
+    this.gender, 
+    required this.childName,
   }) : super(key: key);
 
   @override
@@ -121,13 +124,10 @@ class _EditPatientState extends State<EditPatient> {
           ),
           onPressed: () {
             Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>  PatientPortal(
-              token: widget.token,
-              userId: widget.parentId,
-            )));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>  ChildAppointment(token: widget.token, userId: widget.parentId, childName: widget.childName, childId: widget.patientId,)));
           },
         ),
         title: Text(
@@ -157,7 +157,7 @@ class _EditPatientState extends State<EditPatient> {
                 context,
                 MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      PatientPortal(token: widget.token, userId: widget.parentId),
+                      ChildAppointment(token: widget.token, userId: widget.parentId, childName: widget.childName, childId: widget.patientId,),
                 ),
               );
             },

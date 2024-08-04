@@ -17,6 +17,7 @@ class AppointmentView extends StatefulWidget {
   final bool isParent;
   final String? token;
   final VoidCallback? onDelete;
+  
 
   AppointmentView({Key? key, required this.data, this.isParent = false, required this.token, this.onDelete}) : super(key: key);
 
@@ -106,158 +107,190 @@ class _AppointmentViewState extends State<AppointmentView> {
     var from = formatHour(widget.data['From']); // Format 'From' time to AM/PM
     var to = formatHour(widget.data['To']); // Format 'To' time to AM/PM
 
+    // Convert date format from dd-MM-yyyy to yyyy-MM-dd
+    String convertDateFormat(String date) {
+      List<String> parts = date.split('-');
+      return '${parts[2]}-${parts[1]}-${parts[0]}';
+    }
+
     // Parse the appointment date and format it
-    DateTime appointmentDate = DateTime.parse(widget.data['appointmentDate']);
+    DateTime appointmentDate = DateTime.parse(convertDateFormat(widget.data['appointmentDate']));
     String formattedDate = DateFormat('EEE dd-MM-yyyy').format(appointmentDate);
     var date = '$formattedDate From: $from To: $to';
 
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    if (widget.isParent == false) ...[
-                      if (widget.data['parentPic'] != null)
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage(widget.data['parentPic']),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        )
-                      else
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: AssetImage('assets/icon/profile.png'),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                    ] else ...[
-                      if (widget.data['doctorPic'] != null)
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage(widget.data['doctorPic']),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        )
-                      else
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: AssetImage('assets/icon/profile.png'),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 255, 181, 97), // Adjust the color as needed
+              borderRadius: BorderRadius.circular(12.0), // Adjust the radius as needed
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // changes position of shadow
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      if(widget.isParent == false) ...[
-                        Row(
-                          children: [
-                            Text(
-                              capitalizeFirstLetters("${widget.data['patientFirstName']}"),
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              ' ($parentName)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          date,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ] else ...[
-                        Text('Dr.${doctorName}', 
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        )),
-                        Row(
-                          children: [
-                            Text(
-                              widget.data['patientFirstName'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              ' ($parentName)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          date,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                Spacer(), // Spacer to push buttons to the end
-                widget.isParent == true ? IconButton(
-                  icon: Image(
-                    image: AssetImage('assets/icon/remove.png'),
-                    width: 24,
-                    height: 24,
-                  ),
-                  onPressed: () async {
-                    await _confirmDeleteAppointment();
-                  },
-                ) : Container(),
               ],
             ),
-            Divider(color: const Color.fromARGB(255, 194, 193, 193),)
-          ],
-        ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          if (widget.isParent == false) ...[
+                            if (widget.data['parentPic'] != null)
+                              Container(
+                                width: 64,
+                                height: 64,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: NetworkImage(widget.data['parentPic']),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                            else
+                              Container(
+                                width: 64,
+                                height: 64,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/icon/profile.png'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                          ] else ...[
+                            if (widget.data['doctorPic'] != null)
+                              Container(
+                                width: 64,
+                                height: 64,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: NetworkImage(widget.data['doctorPic']),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                            else
+                              Container(
+                                width: 64,
+                                height: 64,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/icon/profile.png'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            if (widget.isParent == false) ...[
+                              Row(
+                                children: [
+                                  Text(
+                                    capitalizeFirstLetters("${widget.data['patientFirstName']}"),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    ' ($parentName)',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                date,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ] else ...[
+                              Row(
+                                children: [
+                                  Text('Dr.${doctorName}', 
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ), 
+                                  SizedBox(width: 80,), // Spacer to push buttons to the end
+                                  widget.isParent == true
+                                    ? IconButton(
+                                        icon: Image(
+                                          image: AssetImage('assets/icon/remove.png'),
+                                          width: 24,
+                                          height: 24,
+                                        ),
+                                        onPressed: () async {
+                                          await _confirmDeleteAppointment();
+                                        },
+                                      )
+                                    : Container(),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    widget.data['patientFirstName'],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    ' ($parentName)',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                date,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 7),
+        ],
       ),
     );
   }

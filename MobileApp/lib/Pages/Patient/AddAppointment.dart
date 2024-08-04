@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_name/Pages/Patient/Child/childAppointment.dart';
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -9,7 +10,9 @@ import 'package:url_launcher/url_launcher.dart';
 class AddAppointment extends StatefulWidget {
   final String? token;
   final int? parentId;
-  const AddAppointment({Key? key, required this.token, required this.parentId}) : super(key: key);
+  final int? childId;
+  final String? childName;
+  const AddAppointment({Key? key, required this.token, required this.parentId, required this.childId, required this.childName}) : super(key: key);
 
   @override
   State<AddAppointment> createState() => _AddAppointmentState();
@@ -24,6 +27,7 @@ class _AddAppointmentState extends State<AddAppointment> {
   String? selectedPatientName;
   String? selectedDoctorName;
   String? appointmentDate;
+
   int? from;
   late String FromAm = 'AM';
   late String ToAm = 'AM';
@@ -96,13 +100,14 @@ class _AddAppointmentState extends State<AddAppointment> {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${widget.token!}',
     };
-
-    print("add Appointment response status: parent ID: ${widget.parentId} doctor ID: $selectedDoctorId patient ID: $selectedPatientId appointment Date: $appointmentDate From: $from To: ${from! + 1} isTaken: true");
-    var date = convertDateFormatToSend(appointmentDate!);
+     var date = convertDateFormatToSend(appointmentDate!);
+    print("add Appointment response status: parent ID: ${widget.parentId} doctor ID: $selectedDoctorId patient ID: ${widget.childId!} appointment Date: $date From: $from To: ${from! + 1} isTaken: true");
+    
+   
      final body = jsonEncode({
       'parentId': widget.parentId!,
       'doctorId': selectedDoctorId!,
-      "patientId": selectedPatientId!,
+      "patientId": widget.childId!,
       "appointmentDate": date,
       "From": "$from",
       "To": "${from! + 1}",
@@ -116,7 +121,7 @@ class _AddAppointmentState extends State<AddAppointment> {
 
   Future<void> _confirmAddAppointment() async {
      // Helper function to show a dialog
-    Future<bool?> _showConfirmationDialog(String title, String content, bool isTrue) {
+    Future<bool?> showConfirmationDialog(String title, String content, bool isTrue) {
       return showDialog<bool>(
         context: context,
         builder: (context) {
@@ -163,19 +168,9 @@ class _AddAppointmentState extends State<AddAppointment> {
       );
     }
 
-    // Check if the selected patient is missing
-    if (selectedPatientId == null || selectedPatientId == 0) {
-      bool? patientSelected = await _showConfirmationDialog(
-        'Select Patient',
-        'Please select a patient first.',
-        false,
-      );
-      if (patientSelected == false) return;
-    }
-
     // Check if the selected doctor is missing
     if (selectedDoctorId == null || selectedDoctorId == 0) {
-      bool? doctorSelected = await _showConfirmationDialog(
+      bool? doctorSelected = await showConfirmationDialog(
         'Select Doctor',
         'Please select a doctor first.',
         false,
@@ -185,7 +180,7 @@ class _AddAppointmentState extends State<AddAppointment> {
 
     // Check if the appointment date and time are missing
     if (appointmentDate == null || from == null) {
-      bool? appointmentSelected = await _showConfirmationDialog(
+      bool? appointmentSelected = await showConfirmationDialog(
         'Select Appointment',
         'Please select a day and time for the appointment.',
         false,
@@ -194,9 +189,9 @@ class _AddAppointmentState extends State<AddAppointment> {
     }
 
     // If all fields are provided, confirm addition of the appointment
-    bool? confirmed = await _showConfirmationDialog(
+    bool? confirmed = await showConfirmationDialog(
       'Confirm Addition',
-      'Are you sure you want to add this appointment?',
+      'Are you sure you want to add this appointment at ${appointmentDate ?? "(not selected yet)"} from ${from != null ? "$from:00" : "(not selected yet)"} to ${from != null ? "${from! + 1}:00" : "(not selected yet)"}?',
       true,
     );
 
@@ -208,9 +203,9 @@ class _AddAppointmentState extends State<AddAppointment> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PatientPortal(
+            builder: (context) => ChildAppointment(
               token: widget.token,
-              userId: widget.parentId,
+              userId: widget.parentId, childName: widget.childName, childId: widget.childId,
             ),
           ),
         );
@@ -278,16 +273,18 @@ class _AddAppointmentState extends State<AddAppointment> {
   }
 
   bool isSlotTaken(String day, String time) {
+   
     if (selectedDoctorId == null) return false;
     for (var appointment in appointmentList) {
-      var date = (appointment['appointmentDate']);
+      var date = convertDateFormat(appointment['appointmentDate']);
+       print("isSlotTaken: $day, $time $date ${appointment['From']}");
       if (appointment['doctorId'] == selectedDoctorId &&
            date == day &&
           appointment['From'] == time && // Removed curly braces and ensure same type comparison
           appointment['isTaken'] == true) {
         return true;
       }
-      if(appointment['patientId'] == selectedPatientId &&
+      if(appointment['patientId'] == widget.childId! &&
           date == day &&
           appointment['From'] == time && // Removed curly braces and ensure same type comparison
           appointment['isTaken'] == true) {
@@ -375,25 +372,8 @@ class _AddAppointmentState extends State<AddAppointment> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PatientPortal(
-                  token: widget.token,
-                  userId: widget.parentId,
-                ),
-              ),
-            );
-          },
-        ),
         title: const Text(
           'Add Appointment',
           style: TextStyle(
@@ -422,155 +402,88 @@ class _AddAppointmentState extends State<AddAppointment> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            Column(
-              children: [
-                SizedBox(height: 10),
-                Center(
-                  child: Text(
-                    'Choose Patient:',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
+        padding: const EdgeInsets.all(24.0),
+        child: Container(
+          child: Column(
+            children: [
+              Column(
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(216, 255, 158, 47), // Background color
+                      foregroundColor: Colors.white, // Text color
+                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () => _showSelectionBottomSheet(
+                      context,
+                      doctorList,
+                      (id, name) => setState(() {
+                        selectedDoctorId = id;
+                        selectedDoctorName = name;
+                      }),
+                      'Choose Doctor',
+                    ),
+                    child: Text(
+                      selectedDoctorName != null ? selectedDoctorName! : 'Select Doctor',
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(216, 255, 158, 47), // Background color
-                    foregroundColor: Colors.white, // Text color
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: () => _showSelectionBottomSheet(
-                    context,
-                    patientList,
-                    (id, name) => setState(() {
-                      selectedPatientId = id;
-                      selectedPatientName = name;
-                    }),
-                    'Choose Patient',
-                  ),
-                  child: Text(
-                    selectedPatientName != null ? selectedPatientName! : 'Select Patient',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-            Divider(
-              color: Color.fromARGB(255, 211, 210, 210),
-              thickness: 2,
-            ),
-            Column(
-              children: [
-                SizedBox(height: 10),
-                Center(
-                  child: Text(
-                    'Choose Doctor:',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(216, 255, 158, 47), // Background color
-                    foregroundColor: Colors.white, // Text color
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: () => _showSelectionBottomSheet(
-                    context,
-                    doctorList,
-                    (id, name) => setState(() {
-                      selectedDoctorId = id;
-                      selectedDoctorName = name;
-                    }),
-                    'Choose Doctor',
-                  ),
-                  child: Text(
-                    selectedDoctorName != null ? selectedDoctorName! : 'Select Doctor',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-            Divider(
-              color: Color.fromARGB(255, 211, 210, 210),
-              thickness: 2,
-            ),
-            Column(
-              children: [
-                SizedBox(height: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(216, 255, 158, 47), // Background color
-                    foregroundColor: Colors.white, // Text color
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: _pickDate,
-                  child: Text(
-                    'Choose Appointment Date',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-            Divider(
-              color: Color.fromARGB(255, 211, 210, 210),
-              thickness: 2,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(216, 255, 158, 47),
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                ],
               ),
-              onPressed: _pickFromTime, // This line should call _pickFromTime when the button is pressed
-              child: Text(
-                'Choose From Time',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-
-            Divider(
-              color: Color.fromARGB(255, 211, 210, 210),
-              thickness: 2,
-            ),
-            SizedBox(height: 10),
-            Center(
-                child: Text(
-                    'Choose Appointment Slot:',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 20),
+                  Center(
+                    child: Row(
+                      children: [
+                        Container(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color.fromARGB(216, 255, 158, 47), // Background color
+                              foregroundColor: Colors.white, // Text color
+                              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: _pickDate,
+                            child: const Image(
+                              image: AssetImage('assets/icon/calendar.png'),
+                              width: 32,
+                              height: 32,
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromARGB(216, 255, 158, 47),
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: _pickFromTime, // This line should call _pickFromTime when the button is pressed
+                          child: const Image(
+                            image: AssetImage('assets/icon/clock.png'),
+                            width: 32,
+                            height: 32,
+                          )
+                        ),
+                      ],
                     ),
-                ),
-            ),
-            SizedBox(height: 10),
-            Center(
-                child: Text('You want to add Appointment at ${appointmentDate ?? "(not selected yet)"} from ${from != null ? "$from:00" : "(not selected yet)"} to ${from != null ? "${from! + 1}:00" : "(not selected yet)"}')
-            ),
-          ],
+                  ),
+                ],
+              ),
+                
+            ],
+          ),
         ),
       ),
     );

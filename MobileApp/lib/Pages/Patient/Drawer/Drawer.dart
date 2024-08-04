@@ -46,6 +46,7 @@ class _EnddrawerState extends State<Enddrawer> {
 
   Future<void> getPatient() async {
     final url = Uri.parse(routes.yourPatients(widget.parentId));
+    print("++ ${widget.parentId} ++");
     final headers = {
       'accept': 'application/json',
       'Authorization': 'Bearer ${widget.token!}',
@@ -74,9 +75,9 @@ class _EnddrawerState extends State<Enddrawer> {
     print('use pic :${widget.userPic}');
     print('user Name: ${widget.user_name}');
     return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
+      width: MediaQuery.of(context).size.width ,
       height: double.infinity,
-      color: Colors.black,
+      color: Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: SafeArea(
@@ -96,78 +97,45 @@ class _EnddrawerState extends State<Enddrawer> {
                   SizedBox(height: 10,),
                   Text(
                     widget.user_name,
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 32),
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 32),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditUser(
-                            userId: parentId,
-                            token: widget.token,
-                            userName: widget.userName,
-                            email: widget.email,
-                            age: widget.age,
-                            firstName: widget.firstName,
-                            lastName: widget.lastName,
-                            phone: widget.phone,
-                            pic: widget.userPic,
-                          )));
-                    }, 
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Edit Profile',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                        SizedBox(width: 10,),
-                        Image(image: AssetImage('assets/icon/image.png'), width: 20, height: 20,)
-                      ],
-                    ),
-                    )
                 ],
               ),
-              SizedBox(height: 10,),
-              Divider(
-                color: Color.fromARGB(255, 54, 54, 54),
-                thickness: 5,
-              ),
-              SizedBox(height: 10,),
+              SizedBox(height: 20,),
               Container(
                 child: Center(
                   child: Row(
                     children: [
                       Text(
                         'Your Children',
-                        style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
+                        style: TextStyle(color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       Spacer(),
-                      IconButton(
-                        icon: Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 38,
-                        ), onPressed: () { 
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddPatient(
-                            parentId: parentId,
-                            token: widget.token,
-                          )));
-                         },
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 255, 181, 97),
+                          borderRadius: BorderRadius.circular(12.0), // Adjust the radius to your preference
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.add,
+                            color: Colors.black,
+                            size: 32,
+                          ), onPressed: () { 
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddPatient(
+                              parentId: parentId,
+                              token: widget.token,
+                            )));
+                           },
+                        ),
                       ),
                     ],
                   ),  
                 ),
-              ),
-              Divider(
-                color: Color.fromARGB(255, 54, 54, 54),
-                thickness: 2.5,
               ),
               SizedBox(height: 10,),
               ListView.builder(

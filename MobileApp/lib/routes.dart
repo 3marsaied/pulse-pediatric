@@ -4,6 +4,7 @@ class routes {
   static const String login = '$baseUrl/login';
   static const String register = '$baseUrl/signup';
   static String getUser(int userId) => '$baseUrl/get/user/$userId';
+  static String getChild(int userId, int childId) => '$baseUrl/get/patient/$childId/$userId';
   static String doctorAppointment(int doctorId) => '$baseUrl/get/doctor/appointments/table/$doctorId/$doctorId';
   static String doctorInfo(int doctorId) => '$baseUrl/get/doctor/$doctorId';
   static String updateDoctor(int doctorId) => '$baseUrl/update/doctor/$doctorId';
@@ -17,6 +18,8 @@ class routes {
   static const String getAllAppointments = '$baseUrl/get/all/appointments';
   static String addAppointments = '$baseUrl/add/appointment';
   static String deletePatient(int parentId, int patientId) => '$baseUrl/delete/patient/$patientId/$parentId';
+  static String addFcmToken = '$baseUrl/add/fcmToken';
+  static String childAppointment(int userId, int childId)=>'$baseUrl/get/appointment/$userId/$childId';
 }
 
 

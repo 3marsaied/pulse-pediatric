@@ -31,6 +31,33 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  Future<void> showErrorDialog(String message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button to close dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> login() async {
     String username = _usernameController.text;
     String password = _passwordController.text;
@@ -64,26 +91,43 @@ class _LoginPageState extends State<LoginPage> {
         print(Data[0]['role']);
         print(Data[0]['userId']);
         print(Data[0]['accessToken']);
-        
-      } else {
-        // Error in login, handle error response here
-        print('Login failed');
-        print('Status code: ${response.statusCode}');
-        print('Response body: ${response.body}');
 
-        // Show a snackbar with an error message
+        // Navigate to AuthContainer only if login is successful
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AuthContainer(role: Data[0]['role']),
+          ),
+        );
+      } else {
+        // Uncomment the following block to use AlertDialog
+        // await showErrorDialog('Invalid username or password. Please try again.');
+
+        // Uncomment the following block to use SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Invalid username or password. Please try again.'),
+            backgroundColor: Colors.red,
           ),
         );
       }
     } catch (e) {
       // Exception occurred, handle exception here
       print('Exception occurred during login: $e');
+
+      // Uncomment the following block to use AlertDialog
+      // await showErrorDialog('An error occurred. Please try again.');
+
+      // Uncomment the following block to use SnackBar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An error occurred. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -116,12 +160,12 @@ class _LoginPageState extends State<LoginPage> {
                 labelText: 'Username',
                 hintStyle: TextStyle(color: Color.fromARGB(255, 124, 123, 123)),
                 border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                filled: true, // Fill the background
+                fillColor: Color.fromARGB(255, 250, 242, 242),
               ),
-              filled: true, // Fill the background
-              fillColor: Color.fromARGB(255, 250, 242, 242),
-              )
-              ),
+            ),
             SizedBox(height: 20.0),
             TextFormField(
               controller: _passwordController,
@@ -130,10 +174,10 @@ class _LoginPageState extends State<LoginPage> {
                 labelText: 'Password',
                 hintStyle: TextStyle(color: Color(0xFF787878)),
                 border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              filled: true, // Fill the background
-              fillColor: Color.fromARGB(255, 250, 242, 242),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                filled: true, // Fill the background
+                fillColor: Color.fromARGB(255, 250, 242, 242),
               ),
               obscureText: true,
             ),
@@ -141,16 +185,11 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromARGB(255, 255, 181, 97), // Set the background color to deep orange
-                shadowColor: Color.fromARGB(216, 255, 158, 47)
+                shadowColor: Color.fromARGB(216, 255, 158, 47),
               ),
               onPressed: () async {
                 await login();
-                    Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AuthContainer( role: Data[0]['role'],)));
-                },
+              },
               child: Text(
                 'Login',
                 style: TextStyle(color: Colors.white),

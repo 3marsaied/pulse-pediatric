@@ -74,6 +74,7 @@ class _DoctorPortalState extends State<DoctorPortal> {
     };
 
     final response = await http.get(url, headers: headers);
+    print("response doc: ${response.statusCode}");
     if (response.statusCode == 200){
       final data = json.decode(response.body);
       Datas = data;

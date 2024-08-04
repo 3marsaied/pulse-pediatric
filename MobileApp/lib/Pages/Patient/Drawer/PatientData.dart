@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:project_name/Pages/Patient/Drawer/EditPatient.dart';
-import 'package:project_name/Pages/Patient/Drawer/EditPatient.dart';
+import 'package:project_name/Pages/Patient/Child/childAppointment.dart';
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:project_name/Pages/Patient/PatientPortal.dart';
 import 'package:project_name/routes.dart';
-
 
 class PatientView extends StatefulWidget {
   final Map<String, dynamic> data;
   final String? token;
   final int? parentId;
   final VoidCallback? onDelete;
-  const PatientView({super.key, required this.data, required this.parentId, required this.token, this.onDelete});
+
+  const PatientView({
+    super.key,
+    required this.data,
+    required this.parentId,
+    required this.token,
+    this.onDelete,
+  });
 
   @override
   State<PatientView> createState() => _PatientViewState();
@@ -22,11 +28,9 @@ class _PatientViewState extends State<PatientView> {
   late var data = widget.data;
   late var patientId = data['id'];
 
-
   @override
   void initState() {
     super.initState();
-  
   }
 
   Future<void> _deletePatient() async {
@@ -47,74 +51,87 @@ class _PatientViewState extends State<PatientView> {
     }
   }
 
+  String capitalize(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1).toLowerCase();
+  }
+
   @override
   Widget build(BuildContext context) {
-    print("Data is 2222: ${widget.data}");
-    String capitalize(String text) {
-    return text.split(" ").map((str) => str[0].toUpperCase() + str.substring(1)).join(" ");}
-    return Container(
+    String firstName = capitalize(data['firstName']);
+    String lastName = capitalize(data['lastName']);
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChildAppointment(
+              token: widget.token!,
+              userId: widget.parentId!,
+              childName: "$firstName $lastName", childId: patientId,
+            ),
+          ),
+        );
+      },
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+          Container(
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 255, 181, 97),
+              borderRadius: BorderRadius.circular(12.0), // Adjust the radius to your preference
+            ),
+            child: Column(
               children: [
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  capitalize(data['firstName']) + ' ' + capitalize(data['lastName']),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Spacer(),
-                IconButton(
-                  icon: Image(
-                    image: AssetImage('assets/icon/image.png'),
-                    width: 24,
-                    height: 24,
-                  ),
-                  onPressed: () async {
-                    Navigator.pop(context);
-               
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        '$firstName $lastName',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Spacer(),
+                      IconButton(
+                        icon: Image(
+                          image: AssetImage('assets/icon/arrow-right.png'),
+                          width: 24,
+                          height: 24,
+                        ),
+                        onPressed: () async {
+                          Navigator.pop(context);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EditPatient(
-                      parentId: data['parentId'],
-                      patientId: data['id'],
-                      token: widget.token,
-                      firstName: data['firstName'],
-                      lastName: data['lastName'],
-                      gender: data['gender'],
-                      age: data['age'],
-                    )));
-                  },
-                ),
-                 IconButton(
-                  icon: Image(
-                    image: AssetImage('assets/icon/remove.png'),
-                    width: 24,
-                    height: 24,
-                    ), onPressed: () async{ await _deletePatient();
-                    Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPortal(token: widget.token, userId: widget.parentId)));
-                    },
+                              builder: (context) => ChildAppointment(
+                                token: widget.token!,
+                                userId: widget.parentId!,
+                                childName: "$firstName $lastName", childId: patientId,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                
+                ),
               ],
             ),
           ),
-          Divider(
-            color: Color.fromARGB(255, 46, 46, 46),
-            thickness: 1,
-          )
+          SizedBox(
+            height: 15,
+          ),
         ],
       ),
     );

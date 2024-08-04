@@ -21,7 +21,7 @@ String convertDateFormat(String date) {
   }
 
   // Rearrange parts to the desired format
-  String formattedDate = '${parts[0]}-${parts[2]}-${parts[1]}';
+  String formattedDate = '${parts[2]}-${parts[1]}-${parts[0]}';
 
   return formattedDate;
 }
@@ -35,7 +35,7 @@ String convertDateFormatToSend(String date) {
   }
 
   // Rearrange parts to the desired format
-  String formattedDate = '${parts[1]}/${parts[2]}/${parts[0]}';
+  String formattedDate = '${parts[2]}/${parts[1]}/${parts[0]}';
 
-  return formattedDate;
+  return formattedDate.replaceAll('/', '-');
 }
