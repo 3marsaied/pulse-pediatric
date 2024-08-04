@@ -1,7 +1,7 @@
-// app.js
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors'); // Import CORS
 const initializeCounters = require('./initializeCounters');
 
 // Load environment variables from .env file
@@ -10,13 +10,10 @@ dotenv.config();
 const app = express();
 const port = 3001;
 
-app.use(express.json());
+// Enable CORS
+app.use(cors()); // This will allow all origins. You can customize it if needed.
 
-app.use(cors({
-  origin: '*', // Replace with your frontend origin
-  methods: "*",
-  allowedHeaders: '*'
-}));
+app.use(express.json());
 
 const mongoURI = process.env.MONGOURI;
 
@@ -34,14 +31,14 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+// Load routers
+const userRouter = require('./routes/user');
+const loginRouter = require('./routes/auth');
+
+// Use routers
+app.use('/users', userRouter);
+app.use('/auth', loginRouter);
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
-
-const userRouter = require('./routes/user');
-
-app.use("", userRouter);
-
-const loginRouter = require('./routes/auth');
-
-app.use("", loginRouter);
