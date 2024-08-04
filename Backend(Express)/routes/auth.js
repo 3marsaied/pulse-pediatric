@@ -16,7 +16,8 @@ router.post('/login', async (req, res) => {
         if (existingDoctor) {
             const isMatchDoctor = await verifyPassword(password, existingDoctor.password);
             if (isMatchDoctor) {
-                const accessToken = createAccessToken(existingDoctor.id);
+                const user_id = existingDoctor.id;
+                const accessToken = createAccessToken({user_id});
                 return res.json([{ accessToken, role: existingDoctor.role, userId: existingDoctor.id }]);
             }
             else{
@@ -27,7 +28,9 @@ router.post('/login', async (req, res) => {
         if (existingUser) {
             const isMatchUser = await verifyPassword(password, existingUser.password);
             if (isMatchUser) {
-                const accessToken = createAccessToken(existingUser.userId);
+                console.log(`userID: ${existingUser.userId}`)
+                const user_id = existingUser.userId;
+                const accessToken = createAccessToken({user_id});
                 return res.json([{ accessToken, role: existingUser.role, userId: existingUser.userId }]);
             }
             else{
