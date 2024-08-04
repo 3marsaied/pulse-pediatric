@@ -12,6 +12,12 @@ const port = 3001;
 
 app.use(express.json());
 
+app.use(cors({
+  origin: '*', // Replace with your frontend origin
+  methods: "*",
+  allowedHeaders: '*'
+}));
+
 const mongoURI = process.env.MONGOURI;
 
 mongoose.connect(mongoURI, { 
