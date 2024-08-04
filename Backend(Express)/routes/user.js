@@ -27,7 +27,7 @@ router.post('/signup', async (req, res) => {
 
         await newUser.save();
 
-        const accessToken = createAccessToken({ user_id: newUser._id, type: "user" });
+        const accessToken = createAccessToken({ user_id: newUser.userId, type: "user" });
 
         res.status(201).json({ accessToken: accessToken, role: newUser.role, userId: newUser.userId});
     } catch (err) {
