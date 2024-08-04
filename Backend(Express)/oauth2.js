@@ -45,4 +45,17 @@ function verifyAccessToken(id, token, credentialsException = null) {
         }
     }
 }
-module.exports = { createAccessToken, verifyAccessToken };
+
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) return res.status(401).json({ detail: "Authorization header missing" });
+
+    const token = authHeader.split(" ")[1];
+    const tokenData = verifyAccessToken(token);
+    if (!tokenData) return res.status(401).json({ detail: "Unauthorized" });
+
+    req.tokenData = tokenData;
+    next();
+};
+
+module.exports = { createAccessToken, verifyAccessToken, authenticateToken };

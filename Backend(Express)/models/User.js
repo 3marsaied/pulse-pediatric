@@ -12,7 +12,7 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
   googleId: { type: String, default: null },
   createdAt: { type: Date, default: Date.now },
-  PhoneNumber: { type: String },
+  PhoneNumber: { type: String, default: null },
   age: { type: Number, default: null },
   profilePicture: { type: String, default: "https://i.imgur.com/9g7aq8u.png" },
   role: { type: String, required: true, default: 'customer'},

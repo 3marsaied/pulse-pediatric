@@ -5,7 +5,7 @@ const getNextSequenceValue = require('../utils/getNextSequenceValue');
 
 const PatientSchema = new Schema({
   id: { type: Number, unique: true },
-  age: { type: Number },
+  age: { type: Number, default: 0 },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   parentFirstName: { type: String, required: true },

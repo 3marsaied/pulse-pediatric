@@ -1,6 +1,6 @@
 const express = require('express');
 const { verifyPassword } = require('../utils/password_hashing');
-const { createAccessToken } = require('../oauth2');
+const { createAccessToken, verifyAccessToken, authenticateToken } = require('../oauth2');
 const User = require('../models/User');
 const Doctor = require('../models/Doctor');
 
@@ -42,5 +42,6 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ detail: "Internal server error" });
     }
 });
+
 
 module.exports = router;

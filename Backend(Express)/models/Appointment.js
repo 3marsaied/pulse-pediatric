@@ -11,7 +11,7 @@ const AppointmentSchema = new Schema({
   appointmentDate: { type: String, required: true },
   From: { type: String, required: true },
   To: { type: String, required: true },
-  isTaken: { type: Boolean, default: false },
+  isTaken: { type: Boolean, default: true },
   user: { type: Schema.Types.ObjectId, ref: 'User' },
   doctor: { type: Schema.Types.ObjectId, ref: 'Doctor' }
 });
