@@ -1,13 +1,12 @@
 const express = require('express');
-const { hashPassword } = require('../utils/password_hashing');
-const { createAccessToken } = require('../oauth2');
+const {hashPassword} = require('../utils/password_hashing');
+const {createAccessToken} = require('../oauth2');
 const User = require('../models/User');
 
 const router = express.Router();
 
-router.post('/  ', async (req, res) => {
+router.post('/signup', async (req, res) => {
     const { userName, email, password, firstName, lastName, phone } = req.body;
-
     try {
         const existingUser = await User.findOne({ $or: [{ userName }, { email }] });
 
@@ -30,7 +29,7 @@ router.post('/  ', async (req, res) => {
 
         const accessToken = createAccessToken({ user_id: newUser._id, type: "user" });
 
-        res.status(201).json({ accessToken, role: newUser.role, userId: newUser._id });
+        res.status(201).json({ accessToken: accessToken, role: newUser.role, userId: newUser.userId});
     } catch (err) {
         console.error(err);
         res.status(500).json({ detail: "Internal server error" });

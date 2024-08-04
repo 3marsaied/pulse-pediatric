@@ -24,3 +24,5 @@ async function verifyPassword(plainPassword, hashedPassword) {
         throw new Error('Error verifying password');
     }
 }
+
+module.exports = { hashPassword, verifyPassword };
