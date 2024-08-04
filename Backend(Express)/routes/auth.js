@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
             const isMatchUser = await verifyPassword(password, existingUser.password);
             if (isMatchUser) {
                 const accessToken = createAccessToken(existingUser.id);
-                return res.json({ accessToken, role: existingUser.role, userId: existingUser.id });
+                return res.json({ accessToken, role: existingUser.role, userId: existingUser.userId });
             }
             else{
                 res.status(401).json({ message: "Invalid credentials" });
