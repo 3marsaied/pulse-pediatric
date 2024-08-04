@@ -36,8 +36,8 @@ const userRouter = require('./routes/user');
 const loginRouter = require('./routes/auth');
 
 // Use routers
-app.use('/users', userRouter);
-app.use('/auth', loginRouter);
+app.use('', userRouter);
+app.use('', loginRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
