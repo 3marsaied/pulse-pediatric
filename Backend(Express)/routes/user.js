@@ -2,7 +2,10 @@ const express = require('express');
 const {hashPassword} = require('../utils/password_hashing');
 const {createAccessToken, verifyAccessToken, authenticateToken} = require('../oauth2');
 const User = require('../models/User');
-
+const Appointment = require('../models/Appointment');
+const Patient = require('../models/Patient');
+const MRA = require('../models/MRAccess');
+const Reviews = require('../models/Reviews');
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
@@ -317,6 +320,22 @@ router.delete('/delete/user/:userId/:adminId', authenticateToken, async function
             return res.status(403).json({ detail: "Not authorized to perform this action" });
         }
         await existingUser.deleteOne();
+        
+        const appointments = await Appointment.find({ parentId: userId });
+        await appointments.delete();
+
+        const patients = await Patient.find({ parentId: userId });
+
+        for (const Patient of Patients) {
+            const MRAs = await MRA.find({ patientId: Patient.id });
+            await MRAs.delete();
+        }
+
+        await patients.delete();
+
+        const reviews = await Reviews.find({ parentId: userId });
+        await reviews.delete();
+
         res.status(200).json({ detail: "User deleted successfully" });
     }catch (error) {
         console.error('Internal Server Error:', error);
