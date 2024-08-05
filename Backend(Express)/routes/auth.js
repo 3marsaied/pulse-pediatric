@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
             const isMatchUser = await verifyPassword(password, existingUser.password);
             if (isMatchUser) {
                 console.log(`userID: ${existingUser.userId}`)
-                const user_id = existingUser.userId;
+                const user_id = existingUser._id;
                 const accessToken = createAccessToken({user_id});
                 return res.json([{ accessToken, role: existingUser.role, userId: existingUser.userId }]);
             }
