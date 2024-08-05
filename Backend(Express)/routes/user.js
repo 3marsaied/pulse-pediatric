@@ -42,10 +42,10 @@ router.post('/signup', async (req, res) => {
 
 router.post('/add/user/:adminId', authenticateToken, async (req, res) => {
     let { adminId } = req.params;
-    adminId = parseInt(adminId, 10);
     const { userName, email, password, firstName, lastName, phone, role } = req.body;
     try {
-        const admin = await User.findOne({ _id: adminId });
+        console.log('admin: ', adminId);
+        const admin = await User.findById(adminId);
         if (admin.role!=='admin') {
             return res.status(403).json({ detail: "Not an Admin" });
         }
@@ -56,7 +56,7 @@ router.post('/add/user/:adminId', authenticateToken, async (req, res) => {
         }
         // Verify if the admin is authorized to perform this action
         const auth = verifyAccessToken(req.token, adminId);
-        if (!auth) {
+        if (auth !== adminId) {
             return res.status(403).json({ detail: "Not authorized to perform this action" });
         }
 
@@ -88,7 +88,7 @@ router.get('/get/user/:userId', authenticateToken, async (req, res) => {
             return res.status(404).json({ detail: "User not found" });
         }
         const auth = verifyAccessToken(req.token, userId);
-        if (!auth) {
+        if (auth !== userId) {
             return res.status(403).json({ detail: "Not authorized to perform this action" });
         }
         newUser = {
@@ -120,7 +120,7 @@ router.get('/get/user/:userId/:adminId', authenticateToken, async (req, res) => 
             return res.status(404).json({ detail: "User not found" });
         }
         const auth = verifyAccessToken(req.token, adminId);
-        if (!auth) {
+        if (auth !== adminId) {
             return res.status(403).json({ detail: "Not authorized to perform this action" });
         }
         newUser = {
@@ -142,14 +142,13 @@ router.get('/get/user/:userId/:adminId', authenticateToken, async (req, res) => 
 
 router.get('/get/all/users/:adminId', authenticateToken, async (req, res) => {
     let { adminId } = req.params;
-    adminId = parseInt(adminId, 10);
     try {
         const admin = await User.findOne({ _id: adminId });
         if (admin.role!=='admin') {
             return res.status(403).json({ detail: "Not an Admin" });
         }
         const auth = verifyAccessToken(req.token, adminId);
-        if (!auth) {
+        if (auth !== adminId) {
             return res.status(403).json({ detail: "Not authorized to perform this action" });
         }
         const users = await User.find();
@@ -177,16 +176,13 @@ router.get('/get/all/users/:adminId', authenticateToken, async (req, res) => {
 
 router.get('/get/Number/of/users/:adminId', authenticateToken, async function (req, res) {
     let { adminId } = req.params;
-    adminId = parseInt(adminId, 10);
     try {
         const admin = await User.findOne({ _id: adminId});
-        console.log(admin)
-        adminId = parseInt(adminId, 10);
         if (admin.role!=='admin') {
             return res.status(403).json({ detail: "Not an Admin" });
         }
         const auth = verifyAccessToken(req.token, adminId);
-        if (!auth) {
+        if (auth !== adminId) {
             return res.status(403).json({ detail: "Not authorized to perform this action" });
         }
         const users = await User.find()
@@ -224,7 +220,7 @@ router.put('/update/user/:userId', authenticateToken, async function (req, res) 
         }
 
         const auth = verifyAccessToken(req.token, userId);
-        if (!auth) {
+        if (auth !== userId) {
             return res.status(403).json({ detail: "Not authorized to perform this action" });
         }
 
@@ -251,12 +247,10 @@ router.put('/update/user/:userId', authenticateToken, async function (req, res) 
 
 router.put('/update/user/admin/:adminId', authenticateToken, async function (req, res) {
     let { adminId } = req.params;
-    adminId = parseInt(adminId, 10);
     const { firstName, lastName, email, userName, phoneNumber, age, profilePicture, password, role, userId } = req.body;
 
     try {
         const existingUser = await User.findOne({ $or: [{ userName }, { email }] });
-
         if (existingUser && existingUser._id !== userId) {
             return res.status(409).json({ detail: "User with the same username or email already exists" });
         }
@@ -268,8 +262,9 @@ router.put('/update/user/admin/:adminId', authenticateToken, async function (req
         if (admin.role!=='admin') {
             return res.status(403).json({ detail: "Not an Admin" });
         }
+        console.log("hi")
         const auth = verifyAccessToken(req.token, adminId);
-        if (!auth) {
+        if (auth !== adminId) {
             return res.status(403).json({ detail: "Not authorized to perform this action" });
         }
 
@@ -296,7 +291,6 @@ router.put('/update/user/admin/:adminId', authenticateToken, async function (req
 
 router.delete('/delete/user/:userId/:adminId', authenticateToken, async function (req, res) {
     let { userId, adminId } = req.params;
-
     try {
         const existingUser = await User.findOne({ _id: userId});
         if(!existingUser){
@@ -307,25 +301,31 @@ router.delete('/delete/user/:userId/:adminId', authenticateToken, async function
             return res.status(403).json({ detail: "Not an Admin" });
         }
         const auth = verifyAccessToken(req.token, adminId);
-        if (!auth) {
+        if (auth !== adminId) {
             return res.status(403).json({ detail: "Not authorized to perform this action" });
         }
         await existingUser.deleteOne();
         
         const appointments = await Appointment.find({ parentId: userId });
-        await appointments.delete();
-
+        console.log('hi')
+        for (const appointment of appointments) {
+            await appointment.deleteOne();
+        }
         const patients = await Patient.find({ parentId: userId });
 
-        for (const Patient of Patients) {
-            const MRAs = await MRA.find({ patientId: Patient.id });
-            await MRAs.delete();
+        for (const Patient of patients) {
+            const MRAs = await MRA.find({ patientId: Patient._id });
+            for (const MRA of MRAs) {
+                await MRA.deleteOne();
+            }
         }
-
-        await patients.delete();
-
+        for (const Patient of patients) {
+            await Patient.deleteOne();
+        }
         const reviews = await Reviews.find({ parentId: userId });
-        await reviews.delete();
+        for(const review of reviews){
+            await review.deleteOne();
+        }
 
         res.status(200).json({ detail: "User deleted successfully" });
     }catch (error) {
