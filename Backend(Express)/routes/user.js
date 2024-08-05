@@ -30,10 +30,10 @@ router.post('/signup', async (req, res) => {
 
         await newUser.save();
 
-        const user_id = newUser.userId;
+        const user_id = newUser._id;
         const accessToken = createAccessToken({user_id});;
 
-        res.status(201).json({ accessToken: accessToken, role: newUser.role, userId: newUser.userId});
+        res.status(201).json({ accessToken: accessToken, role: newUser.role, userId: newUser._id});
     } catch (err) {
         console.error(err);
         res.status(500).json({ detail: "Internal server error" });
@@ -45,7 +45,7 @@ router.post('/add/user/:adminId', authenticateToken, async (req, res) => {
     adminId = parseInt(adminId, 10);
     const { userName, email, password, firstName, lastName, phone, role } = req.body;
     try {
-        const admin = await User.findOne({ userId: adminId });
+        const admin = await User.findOne({ _id: adminId });
         if (admin.role!=='admin') {
             return res.status(403).json({ detail: "Not an Admin" });
         }
@@ -82,9 +82,8 @@ router.post('/add/user/:adminId', authenticateToken, async (req, res) => {
 
 router.get('/get/user/:userId', authenticateToken, async (req, res) => {
     let { userId } = req.params;
-    userId = parseInt(userId, 10);
     try {
-        const user = await User.findOne({ userId });
+        const user = await User.findOne({ _id: userId });
         if (!user) {
             return res.status(404).json({ detail: "User not found" });
         }
@@ -93,7 +92,6 @@ router.get('/get/user/:userId', authenticateToken, async (req, res) => {
             return res.status(403).json({ detail: "Not authorized to perform this action" });
         }
         newUser = {
-            userId: user.userId,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
@@ -112,14 +110,12 @@ router.get('/get/user/:userId', authenticateToken, async (req, res) => {
 
 router.get('/get/user/:userId/:adminId', authenticateToken, async (req, res) => {
     let { userId, adminId } = req.params;
-    adminId = parseInt(adminId, 10);
-    userId = parseInt(userId, 10);
     try {
-        const admin = await User.findOne({ userId: adminId });
+        const admin = await User.findOne({ _id: adminId });
         if (admin.role!=='admin') {
             return res.status(403).json({ detail: "Not an Admin" });
         }
-        const user = await User.findOne({ userId });
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ detail: "User not found" });
         }
@@ -128,7 +124,6 @@ router.get('/get/user/:userId/:adminId', authenticateToken, async (req, res) => 
             return res.status(403).json({ detail: "Not authorized to perform this action" });
         }
         newUser = {
-            userId: user.userId,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
@@ -149,7 +144,7 @@ router.get('/get/all/users/:adminId', authenticateToken, async (req, res) => {
     let { adminId } = req.params;
     adminId = parseInt(adminId, 10);
     try {
-        const admin = await User.findOne({ userId: adminId });
+        const admin = await User.findOne({ _id: adminId });
         if (admin.role!=='admin') {
             return res.status(403).json({ detail: "Not an Admin" });
         }
@@ -162,7 +157,6 @@ router.get('/get/all/users/:adminId', authenticateToken, async (req, res) => {
 
         for (const user of users) {
             const newUser = {
-                userId: user.userId,
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
@@ -185,7 +179,7 @@ router.get('/get/Number/of/users/:adminId', authenticateToken, async function (r
     let { adminId } = req.params;
     adminId = parseInt(adminId, 10);
     try {
-        const admin = await User.findOne({ userId: adminId});
+        const admin = await User.findOne({ _id: adminId});
         console.log(admin)
         adminId = parseInt(adminId, 10);
         if (admin.role!=='admin') {
@@ -216,16 +210,15 @@ router.get('/get/Number/of/users/:adminId', authenticateToken, async function (r
 
 router.put('/update/user/:userId', authenticateToken, async function (req, res) {
     let { userId } = req.params;
-    userId = parseInt(userId, 10);
     const { firstName, lastName, email, userName, phoneNumber, age, profilePicture, password } = req.body;
 
     try {
         const existingUser = await User.findOne({ $or: [{ userName }, { email }] });
 
-        if (existingUser && existingUser.userId !== userId) {
+        if (existingUser && existingUser._id !== userId) {
             return res.status(409).json({ detail: "User with the same username or email already exists" });
         }
-        const user = await User.findOne({ userId });
+        const user = await User.findOne({_id: userId });
         if (!user) {
             return res.status(404).json({ detail: "User not found" });
         }
@@ -264,14 +257,14 @@ router.put('/update/user/admin/:adminId', authenticateToken, async function (req
     try {
         const existingUser = await User.findOne({ $or: [{ userName }, { email }] });
 
-        if (existingUser && existingUser.userId !== userId) {
+        if (existingUser && existingUser._id !== userId) {
             return res.status(409).json({ detail: "User with the same username or email already exists" });
         }
-        const user = await User.findOne({ userId });
+        const user = await User.findOne({ _id: userId });
         if (!user) {
             return res.status(404).json({ detail: "User not found" });
         }
-        const admin = await User.findOne({userId: adminId});
+        const admin = await User.findOne({_id: adminId});
         if (admin.role!=='admin') {
             return res.status(403).json({ detail: "Not an Admin" });
         }
@@ -289,7 +282,6 @@ router.put('/update/user/admin/:adminId', authenticateToken, async function (req
             phoneNumber: phoneNumber === "" ? user.phoneNumber : phoneNumber,
             age: age === null ? user.age : age,
             profilePicture: profilePicture === "" ? user.profilePicture : profilePicture,
-            userId: user.userId,
             role: role === "" ? user.role : role
         };
 
@@ -304,14 +296,13 @@ router.put('/update/user/admin/:adminId', authenticateToken, async function (req
 
 router.delete('/delete/user/:userId/:adminId', authenticateToken, async function (req, res) {
     let { userId, adminId } = req.params;
-    userId = parseInt(userId, 10);
-    adminId = parseInt(adminId, 10);
+
     try {
-        const existingUser = await User.findOne({ userId: userId});
+        const existingUser = await User.findOne({ _id: userId});
         if(!existingUser){
             return res.status(404).json({ detail: "User not found" });
         }
-        const admin = await User.findOne({ userId: adminId });
+        const admin = await User.findOne({ _id: adminId });
         if (admin.role!=='admin') {
             return res.status(403).json({ detail: "Not an Admin" });
         }

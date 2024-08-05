@@ -34,6 +34,7 @@ app.get('/', (req, res) => {
 
 app.use('', require('./routes/user'));
 app.use('', require('./routes/auth'));
+app.use('', require('./routes/patient'));
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
