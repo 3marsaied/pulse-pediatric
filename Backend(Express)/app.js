@@ -31,7 +31,6 @@ mongoose.connect(mongoURI, {
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-
 app.use('', require('./routes/user'));
 app.use('', require('./routes/auth'));
 app.use('', require('./routes/patient'));
