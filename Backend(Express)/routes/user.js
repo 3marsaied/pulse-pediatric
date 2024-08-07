@@ -307,7 +307,6 @@ router.delete('/delete/user/:userId/:adminId', authenticateToken, async function
         await existingUser.deleteOne();
         
         const appointments = await Appointment.find({ parentId: userId });
-        console.log('hi')
         for (const appointment of appointments) {
             await appointment.deleteOne();
         }
