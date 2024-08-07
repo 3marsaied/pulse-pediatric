@@ -6,17 +6,21 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 app.use(express.json());
 
 
 const corsOptions = {
   origin: '*', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
   allowedHeaders: ['Content-Type', 'Authorization'], 
-  credentials: true,
+  credentials: true, 
 };
+
+app.use(cors(corsOptions));
+
+app.options('*', cors(corsOptions));
 
 const mongoURI = process.env.MONGOURI;
 
@@ -32,6 +36,8 @@ mongoose.connect(mongoURI, {
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+
+
 app.use('', require('./routes/user'));
 app.use('', require('./routes/auth'));
 app.use('', require('./routes/patient'));
