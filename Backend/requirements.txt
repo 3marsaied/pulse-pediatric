@@ -9,7 +9,7 @@ typing
 sqlalchemy
 pydantic
 passlib
-psycopg2
+psycopg2-binary
 python-multipart
 bcrypt
 jwt
